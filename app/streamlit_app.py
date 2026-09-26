@@ -93,9 +93,15 @@ def render_alerts(res):
 
 
 # ---------------- API 封装 ----------------
+# 关键：trust_env=False 忽略系统代理。macOS 上若有 Clash/V2Ray 等本地代理，
+# requests 默认会把 127.0.0.1 的请求也转发到代理，导致 502 Bad Gateway。
+_SESSION = requests.Session()
+_SESSION.trust_env = False
+
+
 def api_get(base, path, params=None):
     try:
-        r = requests.get(base + path, params=params, timeout=30)
+        r = _SESSION.get(base + path, params=params, timeout=30)
         r.raise_for_status()
         return r.json(), None
     except Exception as e:
@@ -104,7 +110,7 @@ def api_get(base, path, params=None):
 
 def api_post(base, path, payload):
     try:
-        r = requests.post(base + path, json=payload, timeout=120)
+        r = _SESSION.post(base + path, json=payload, timeout=120)
         r.raise_for_status()
         return r.json(), None
     except requests.HTTPError as e:
