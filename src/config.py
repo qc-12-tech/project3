@@ -74,15 +74,7 @@ KEYWORD_MIN_COUNT = 5
 KEYWORD_MIN_LIFT = 1.3        # 差评占比 / 整体占比 至少多少倍才算“问题词”
 KEYWORD_SCAN_LIMIT = 50_000   # 提取关键词时最多扫描多少条差评（-1 表示全部）
 
-# ---------------- 购买建议（独立 Transformer 模型） ----------------
-# 训练数据：对已有评价 data/reviews.jsonl 按「具体内容」派生购买建议标签，
-# 由 src/label_advice.py 生成 data/advice.jsonl（卫生问题一票否决 / 好评多→推荐 /
-# 褒贬并存→谨慎 / 差评多→不建议），复用情感模型词表 vocab.json。
-ADVICE_DATA = os.path.join(DATA_DIR, "advice.jsonl")
-ADVICE_MODEL_PATH = os.path.join(OUTPUT_DIR, "advice_model.pt")
-ADVICE_CACHE_PREFIX = os.path.join(OUTPUT_DIR, "encoded_advice")  # 独立缓存，避免覆盖情感缓存
-ADVICE_LABELS = ["推荐购买", "谨慎购买", "不建议购买"]
-ADVICE_LABEL2ID = {name: i for i, name in enumerate(ADVICE_LABELS)}
-ADVICE_ID2LABEL = {i: name for name, i in ADVICE_LABEL2ID.items()}
-# 用于把建议概率折成 1~5 星：推荐=1.0 / 谨慎=0.5 / 不建议=0.0
-ADVICE_SCORE = [1.0, 0.5, 0.0]
+# ---------------- 查重 / 刷评论检测 ----------------
+DUP_SIM_THRESHOLD = 0.55   # 字符 2-gram Jaccard 相似度阈值，>= 该值视为近似重复
+DUP_RATE_HIGH = 0.40       # 重复率 >= 该值 -> 疑似刷评论
+DUP_RATE_WARN = 0.20       # 重复率 >= 该值 -> 需关注

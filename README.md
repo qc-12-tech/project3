@@ -16,7 +16,7 @@
 | 判断可能错误的概率 | MC Dropout 多次前向，`error_prob = 1 - max(prob)`（+ 温度校准） |
 | 高于阈值提醒人工判断 | `error_prob >= ERROR_ALERT(0.40)` → `need_review=true`，进入待复核队列 |
 | 样本存储供后续判断 | SQLite `outputs/reviews.db`，可回填真实标签用于再训练 |
-| 购买建议 | 独立 Transformer，按评价内容给出 推荐/谨慎/不建议 购买（`src/advice.py`） |
+| 评价查重 / 刷评论检测 | 完全重复 + 字符 n-gram 近似重复识别，判定是否存在刷评（`src/duplicate.py`） |
 
 ## 目录结构
 
@@ -31,9 +31,7 @@ project3/
 │   ├── train.py           # 训练脚本
 │   ├── retrain.py         # 主动学习增量再训练（消费 true_label）
 │   ├── predict.py         # 推理：打分 + MC Dropout 错误概率 + 温度校准
-│   ├── label_advice.py    # 按评价内容派生购买建议标签
-│   ├── train_advice.py    # 训练购买建议模型
-│   ├── advice.py          # 购买建议推理 + 理由提取
+│   ├── duplicate.py       # 评价查重 / 刷评论检测
 │   ├── keywords.py        # 差评高频词 / 问题维度分析
 │   └── store.py           # SQLite 样本存储与复核队列
 ├── app/
@@ -97,7 +95,7 @@ python -m src.train --data data/sample.jsonl --epochs 2
 - **评价识别**：输入评价 → 展示分类、满意度（1~5 星）、置信度、处理等级与告警，并给出概率柱状图。
 - **批量识别**：多行输入 → 汇总各大类数量与告警列表，表格查看全部结果。
 - **差评分析**：差评高频问题词柱状图 + 主要问题维度占比 + 各维度代表词。
-- **购买建议**：输入评价 → 给出 推荐购买/谨慎购买/不建议购买、置信度、星级与关注点。
+- **查重检测**：粘贴同一商品的多条评价 → 检测完全重复/近似重复，判定是否疑似刷评论。
 - **待核实评价**：待核实队列逐条处理，回填真实标签（写入样本库）或标记已处理。
 - **数据统计**：样本总数、待核实/待处理数量、平均满意度与类别分布。
 
@@ -113,7 +111,7 @@ python -m src.train --data data/sample.jsonl --epochs 2
 | GET | `/reviews/pending` | 待人工复核队列 |
 | POST | `/reviews/{id}/label` | 回填人工真实标签（存入样本库） |
 | POST | `/reviews/{id}/process` | 标记问题已处理 |
-| POST | `/advice` | 输入评价生成购买建议（推荐/谨慎/不建议 + 置信度 + 理由） |
+| POST | `/duplicate/check` | 对多条评价做查重，返回重复率与疑似刷评论判定 |
 | GET | `/stats` | 总体统计（各类占比、待处理/待复核数、均分） |
 
 示例：
@@ -145,24 +143,21 @@ curl -X POST localhost:8000/predict -H 'Content-Type: application/json' \
 → Masked Mean Pooling → LayerNorm → Dropout → 线性分类头。约 0.43M 参数，纯 PyTorch，
 无需预训练模型。细节见 `src/model.py`，实现风格与 `testcode/transformer.py` 保持一致。
 
-## 购买建议（独立 Transformer 模型）
+## 查重 / 刷评论检测
 
-另一个从零训练的 Transformer，专门根据评价的**具体内容**给出购买建议
-（推荐购买 / 谨慎购买 / 不建议购买）。它不直接复用情感标签，而是先按内容规则
-（卫生问题一票否决 / 好评多→推荐 / 褒贬并存→谨慎 / 差评多→不建议）派生标签再训练：
+判断一个商品是否存在刷评，核心看两类信号：
+
+1. **完全重复**：一字不差的评价出现多次（复制粘贴刷评）；
+2. **近似重复**：换几个字 / 加标点的模板化评价（用字符 n-gram 的 Jaccard 相似度做贪心聚类识别）。
+
+重复率 `= 1 - 聚类后唯一评价数 / 总评价数`，阈值在 `src/config.py` 的 `DUP_RATE_HIGH(0.40)` / `DUP_RATE_WARN(0.20)`：
 
 ```bash
-# 1) 按内容派生标签 -> data/advice.jsonl（复用已有 reviews.jsonl，不重新生成数据）
-python -m src.label_advice
-
-# 2) 训练（复用 vocab.json，独立编码缓存；1M×3 epoch）
-python -m src.train_advice
-
-# 3) 命令行试一下
-python -m src.advice --text "味道很赞，配送很快，分量很足"
+# 命令行试一下
+python -m src.duplicate
 ```
 
-前端「购买建议」页调用 `POST /advice`，输出建议、置信度、1~5 星与关注维度。
+前端「查重检测」页调用 `POST /duplicate/check`，返回重复率、判定结论，以及完全重复/近似重复的分组明细。
 
 ## 主动学习闭环（增量再训练）
 

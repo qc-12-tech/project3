@@ -55,7 +55,7 @@ st.markdown(_CSS, unsafe_allow_html=True)
 LABEL_COLOR = {"好评": "#00b578", "中评": "#ff8a00", "差评": "#ff4d4f"}
 SEV_COLOR = {"严重": "#ff4d4f", "警告": "#ff8a00", "正常": "#00b578"}
 SEV_TEXT = {"严重": "严重", "警告": "关注", "正常": "正常"}
-ADVICE_COLOR = {"推荐购买": "#00b578", "谨慎购买": "#ff8a00", "不建议购买": "#ff4d4f"}
+DUP_LEVEL = {"high": ("#ff4d4f", "疑似刷评论"), "medium": ("#ff8a00", "需关注"), "normal": ("#00b578", "正常")}
 
 
 def badge(text, color):
@@ -124,7 +124,7 @@ st.sidebar.markdown("**🛵 评价管理中心**")
 st.sidebar.caption("外卖商家运营台")
 nav = st.sidebar.radio(
     "导航",
-    ["评价识别", "批量识别", "差评分析", "购买建议", "待核实评价", "数据统计"],
+    ["评价识别", "批量识别", "差评分析", "查重检测", "待核实评价", "数据统计"],
     label_visibility="collapsed")
 
 st.sidebar.markdown("---")
@@ -274,43 +274,46 @@ elif nav == "差评分析":
                     st.markdown(f"**{a['aspect']}（{a['ratio']*100:.1f}%）**：{words}")
 
 # ============================================================
-# 4) 购买建议
+# 4) 查重检测（刷评论识别）
 # ============================================================
-elif nav == "购买建议":
+elif nav == "查重检测":
     with st.container(border=True):
-        st.markdown("**生成购买建议**")
-        st.caption("输入一条评价，系统给出是否值得购买的建议")
-        adv_text = st.text_area(
-            "评价内容", "味道很赞，配送很快，分量很足，值得回购！", height=110,
-            label_visibility="collapsed")
-        adv_btn = st.button("生成建议", type="primary")
-    if adv_btn:
-        if not adv_text.strip():
-            st.info("请输入评价内容")
+        st.markdown("**评价查重 / 刷评论检测**")
+        st.caption("粘贴同一商品的多条评价（每行一条），检测是否存在重复或模板化刷评")
+        default = ("味道很好，下次还来\n味道很好，下次还来\n味道很好，下次还来\n"
+                   "味道很好 下次还来！\n味道不错，下次再来\n配送很快，包装完好\n"
+                   "分量很足，性价比高\n太咸了，不好吃")
+        dup_text = st.text_area("评价列表", default, height=180, label_visibility="collapsed")
+        dup_btn = st.button("开始检测", type="primary")
+    if dup_btn:
+        texts = [t.strip() for t in dup_text.splitlines() if t.strip()]
+        if len(texts) < 2:
+            st.info("请至少输入 2 条评价")
         else:
-            res, err = api_post(base, "/advice", {"text": adv_text})
+            res, err = api_post(base, "/duplicate/check", {"texts": texts})
             if err:
                 st.error(f"请求失败：{err}")
             else:
-                rating = res["rating"]
-                confidence = round(res["confidence"] * 100, 1)
-                c1, c2, c3 = st.columns(3)
-                c1.metric("购买建议", res["advice"])
-                c2.metric("置信度", f"{confidence}%")
-                c3.metric("推荐星级", f"{rating} 分")
-                st.markdown(
-                    f'{star_html(rating)}　<span style="color:#666;">{rating} / 5.0</span>　'
-                    f'{badge(res["advice"], ADVICE_COLOR.get(res["advice"], "#666"))}',
-                    unsafe_allow_html=True)
-                if res["reasons"]:
-                    st.markdown(f"**关注点：** " + " · ".join(res["reasons"]))
-                st.markdown(f"**结论：** {res['summary']}")
-                with st.container(border=True):
-                    st.markdown("**建议倾向**")
-                    probs = pd.DataFrame(
-                        {"建议": list(res["probs"].keys()),
-                         "概率": list(res["probs"].values())}).set_index("建议")
-                    st.bar_chart(probs, height=240)
+                color, _ = DUP_LEVEL.get(res["level"], DUP_LEVEL["normal"])
+                c1, c2, c3, c4 = st.columns(4)
+                c1.metric("评价总数", res["total"])
+                c2.metric("唯一评价数", res["unique_count"])
+                c3.metric("重复率", f"{res['dup_rate']*100:.1f}%")
+                c4.metric("结论", res["verdict"].split("，")[0])
+                st.markdown(badge(res["verdict"], color), unsafe_allow_html=True)
+                if res["exact_dup_groups"]:
+                    st.markdown("**完全重复（复制粘贴）**")
+                    edf = pd.DataFrame(res["exact_dup_groups"]).rename(
+                        columns={"text": "评价内容", "count": "出现次数"})
+                    st.dataframe(edf, use_container_width=True)
+                if res["near_dup_groups"]:
+                    st.markdown("**近似重复（模板化刷评）**")
+                    for g in res["near_dup_groups"]:
+                        sim = f"{g['similarity']*100:.0f}%"
+                        st.markdown(
+                            f"相似度 {sim} · 共 {g['count']} 条：`{'` ｜ `'.join(g['texts'])}`")
+                if not res["exact_dup_groups"] and not res["near_dup_groups"]:
+                    st.success("未发现明显重复，评价内容较多样")
 
 # ============================================================
 # 5) 待核实评价（人工复核）

@@ -30,7 +30,7 @@ def build_or_load_cache(data_path, vocab, max_len=C.MAX_LEN, limit=None, verbose
 
     ids:    np.memmap  [N, max_len] int32
     labels: np.ndarray [N]          int64
-    cache_prefix: 自定义缓存前缀（例如购买建议任务用独立前缀，避免覆盖情感缓存）。
+    cache_prefix: 自定义缓存前缀（多任务时用独立前缀，避免互相覆盖缓存）。
     """
     os.makedirs(C.OUTPUT_DIR, exist_ok=True)
     prefix = cache_prefix or C.CACHE_PREFIX

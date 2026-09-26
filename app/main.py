@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 
 from src import config as C
 from src import keywords as kw
-from src.advice import AdvicePredictor
+from src.duplicate import check_duplicates
 from src.predict import ReviewPredictor
 from src.store import ReviewStore
 
@@ -25,8 +25,6 @@ STATE = {}
 async def lifespan(app: FastAPI):
     STATE["predictor"] = ReviewPredictor()
     STATE["store"] = ReviewStore()
-    # 购买建议模型若未训练则留空，接口会给出明确提示
-    STATE["advice"] = AdvicePredictor() if os.path.exists(C.ADVICE_MODEL_PATH) else None
     yield
     STATE.clear()
 
@@ -49,8 +47,8 @@ class LabelRequest(BaseModel):
     true_label: str = Field(..., description="人工复核后的真实标签", examples=["差评"])
 
 
-class AdviceRequest(BaseModel):
-    text: str = Field(..., description="评价文本，用于生成购买建议", examples=["味道很好，配送也快"])
+class DuplicateRequest(BaseModel):
+    texts: List[str] = Field(..., description="同一商品的多条评价文本")
 
 
 # ---------------- 元信息 ----------------
@@ -65,7 +63,8 @@ def root():
             "error_alert": C.ERROR_ALERT,
         },
         "endpoints": ["/predict", "/predict/batch", "/negative/keywords",
-                      "/reviews/pending", "/reviews/{id}/label", "/stats", "/advice"],
+                      "/reviews/pending", "/reviews/{id}/label", "/stats",
+                      "/duplicate/check"],
     }
 
 
@@ -109,17 +108,12 @@ def predict_batch(req: BatchRequest):
             "results": results_with_text}
 
 
-# ---------------- 购买建议 ----------------
-@app.post("/advice", tags=["购买建议"])
-def advice(req: AdviceRequest):
-    predictor = STATE.get("advice")
-    if predictor is None:
-        raise HTTPException(
-            status_code=503,
-            detail="购买建议模型未训练，请先运行 python -m src.train_advice")
-    result = predictor.advise(req.text)
-    result["text"] = req.text
-    return result
+# ---------------- 查重 / 刷评论检测 ----------------
+@app.post("/duplicate/check", tags=["查重检测"])
+def duplicate_check(req: DuplicateRequest):
+    if len(req.texts) < 2:
+        raise HTTPException(status_code=400, detail="至少需要 2 条评价")
+    return check_duplicates(req.texts)
 
 
 # ---------------- 差评高频词 ----------------
