@@ -1,0 +1,9 @@
+# data / outputs generated artifacts
+data/*.jsonl
+outputs/*
+!outputs/.gitkeep
+__pycache__/
+*.pyc
+.DS_Store
+.venv/
+venv/
