@@ -1,9 +1,20 @@
-# data / outputs generated artifacts
-data/*.jsonl
-outputs/*
-!outputs/.gitkeep
 __pycache__/
 *.pyc
+.pytest_cache/
 .DS_Store
-.venv/
-venv/
+
+# 原始数据（387MB，不在仓库里，见 README「数据」一节）
+data/*.csv
+
+# 可由 scripts/run_all.sh 重新生成的大文件/中间产物
+artifacts/cache/
+artifacts/preds/
+artifacts/model.pt
+artifacts/reviews.parquet
+artifacts/user_meta.parquet
+artifacts/spam_reviews.parquet
+artifacts_smoke/
+
+# 保留的小体积结果（会提交，便于在 GitHub 上直接看结论）：
+#   artifacts/movie_summary.csv|json, movie_pros_cons.json, aspects.json,
+#   spam_summary.json|csv, train_log.json, vocab.json, movies.json, 分析报告.md

@@ -1,0 +1,81 @@
+{
+ "config": {
+  "model": {
+   "vocab_size": 5682,
+   "d_model": 256,
+   "n_layer": 4,
+   "n_head": 8,
+   "d_ff": 688,
+   "max_len": 144,
+   "dropout": 0.1,
+   "rope_theta": 10000.0,
+   "tie_embeddings": true
+  },
+  "train": {
+   "batch_size": 128,
+   "lr": 0.0003,
+   "min_lr_ratio": 0.1,
+   "weight_decay": 0.01,
+   "warmup_ratio": 0.06,
+   "epochs": 2,
+   "grad_clip": 1.0,
+   "label_smoothing": 0.05,
+   "max_train_samples": 150000,
+   "max_val_samples": 15000,
+   "token_budget": 8192,
+   "log_every": 25,
+   "seed": 42,
+   "device": "auto"
+  },
+  "device": "mps",
+  "n_train": 150000,
+  "n_val": 15000
+ },
+ "history": [
+  {
+   "rating_acc": 0.7339333333333333,
+   "rating_mae": 0.2660666666666667,
+   "n_sent_eval": 11692,
+   "n_rate_eval": 15000,
+   "epoch": 0,
+   "train_loss": 1.1100543687244255,
+   "elapsed_s": 1089.8464047908783
+  },
+  {
+   "rating_acc": 0.7441333333333333,
+   "rating_mae": 0.2558666666666667,
+   "n_sent_eval": 11692,
+   "n_rate_eval": 15000,
+   "epoch": 1,
+   "train_loss": 0.8604111198190848,
+   "elapsed_s": 2270.819301843643
+  }
+ ],
+ "best": 0.20957163042584837,
+ "calibration": {
+  "threshold": 0.2889968752861023,
+  "acc": 0.8735887786520697,
+  "precision_pos": 0.8836576267768929,
+  "recall_pos": 0.9643525140279459,
+  "f1_pos": 0.922243265993266,
+  "pos_rate_pred": 0.8483578515224085,
+  "pos_rate_true": 0.7773691412931919,
+  "n": 11692
+ },
+ "val_at_0.5": {
+  "sent_acc": 0.13342456380431064,
+  "sent_f1_pos": 0.14266373328820442
+ },
+ "final_eval": {
+  "sent_acc": 0.8666,
+  "sent_precision_pos": 0.92,
+  "sent_recall_pos": 0.9073,
+  "sent_f1_pos": 0.9136,
+  "rating_acc": 0.7339,
+  "rating_mae": 0.2661,
+  "n_sent_eval": 11692,
+  "n_rate_eval": 15000,
+  "n_val": 15000
+ },
+ "note": "final_eval/calibration 是在修复评估方向后，对最终 checkpoint 的完整验证集评测"
+}

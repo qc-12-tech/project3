@@ -1,192 +1,242 @@
-# 外卖评价识别系统（Transformer）
+# 电影评价分析系统（decoder-only Transformer）
 
-基于**从零实现的 Transformer Encoder** 的中文外卖评价分析系统。支持好评/中评/差评三分类、
-差评高频问题词挖掘、风险打分与告警、预测错误概率（不确定度）估计、人工复核队列和样本存储。
-架构采用 **FastAPI 提供接口 + Streamlit 作为前端**。
+用**从零实现的 decoder-only（GPT 式）因果语言模型**分析豆瓣电影短评（DMSC，212 万条 / 28 部电影），
+完成四件事：
 
-## 功能特性
+1. **统计每部电影的好评与差评**（真实星级口径 + 模型判定口径）
+2. **给每部电影打分**（贝叶斯加权星级 + 模型好评率 → 0~10 综合分）
+3. **根据影评统计每部电影的优点与缺点**（方面词粒度极性 + log-odds 关键词 + 原句证据）
+4. **检测是否存在刷评论（水军）**（文本复用、模板化、广告导流、用户/时间聚集、星级与文本情感矛盾、
+   高赞短评、极短无信息等 10 类信号 → 每条影评的可疑度 + 证据链）
 
-| 需求 | 实现 |
-| --- | --- |
-| 好评/中评/差评识别 | 字符级 Transformer Encoder 三分类（`src/model.py`） |
-| 差评高频词 / 主要问题 | jieba 分词 + 词频 + lift 区分度 + 维度聚合（`src/keywords.py`） |
-| 对所有评价打分 | 情感分 `score = Σ pᵢ·sᵢ`（好评1 / 中评0.5 / 差评0），越低越严重 |
-| 低于阈值提醒处理 | `score < SCORE_CRITICAL(0.30)` → `need_process=true`，严重程度=严重 |
-| 自主输入评价 | `POST /predict`、`POST /predict/batch` |
-| 判断可能错误的概率 | MC Dropout 多次前向，`error_prob = 1 - max(prob)`（+ 温度校准） |
-| 高于阈值提醒人工判断 | `error_prob >= ERROR_ALERT(0.40)` → `need_review=true`，进入待复核队列 |
-| 样本存储供后续判断 | SQLite `outputs/reviews.db`，可回填真实标签用于再训练 |
-| 评价查重 / 刷评论检测 | 完全重复 + 字符 n-gram 近似重复识别，判定是否存在刷评（`src/duplicate.py`） |
+## 为什么是 decoder-only
+
+模型不使用任何 encoder，也不依赖预训练权重，所有预测都写成**生成下一个 token**：
+
+```
+<bos> 影评：{影评正文} \n 情感：{好|差} ␣ 评分：{1-5} <eos>
+        └────── 输入前缀 ──────┘└─ 目标1 ─┘└─ 目标2 ─┘
+```
+
+- 训练：只在前两个目标位与 `<eos>` 位上算交叉熵（next-token 预测）；`star==3` 的中评**屏蔽情感位**，只监督评分位。
+- 推理：两步自回归解码 —— ① 前缀最后一位在受限词表 `{好, 差}` 上取 `P(好)`；② 追加情感 token 与 `␣评分：`，用 **KV cache** 单步前向，在 `{1,2,3,4,5}` 上取概率分布，得期望分 `Σ p·r`。
+- 全量 212 万条推理按前缀长度分组（等长批、无 padding），避免 RoPE 位置错位与无效计算。
+
+| 配置 | 值 |
+|---|---|
+| 层数 / 维度 / 头数 | 4 / 256 / 8（head_dim 32） |
+| 前馈 | SwiGLU，d_ff = 688 |
+| 归一化 | Pre-RMSNorm（Post-LN 不用） |
+| 位置编码 | **RoPE**（无可学习位置表，θ=10000） |
+| 注意力 | 因果自注意力（`scaled_dot_product_attention(is_causal=True)`） |
+| 词表 | 字符级 8000（无预训练，语料统计 + 模板字符强制入表） |
+| 权重共享 | Embedding ↔ LM Head 共享 |
+| 参数量 | 约 5.1M |
+| 最大长度 | 144 字（覆盖 p99=140） |
+
+## 结果（全量 2,036,200 条影评 / 28 部电影）
+
+**综合评分排行（节选）**：疯狂动物城 9.37 → 你的名字 8.78 → 大圣归来 8.71 → 爱乐之城 8.64 → 釜山行 8.53 …
+末位：何以笙箫默 2.97、小时代3 3.90、九层妖塔 4.17、小时代1 4.18 —— 与公众口碑一致。
+
+**优缺点挖掘**：28/28 部电影都有可解释优点；16 部存在「显著缺点」方面词（如《何以笙箫默》广告植入 / 演技表演 /
+导演执导），其余 12 部补「相对短板」。举例：
+
+- 《长城》显著问题：广告植入、剧情故事、节奏剪辑（每条结论都能回溯到原句证据）
+- 《疯狂动物城》优点：剧情故事（提及 640，好评率 80%）、笑点幽默（410，89%）、画面特效（231，88%）
+
+**刷评论检测**：全站疑似刷评 **182,188 条（8.95%）**，分布高度不均 ——
+
+| 电影 | 疑似占比 | 命中最多的信号 |
+|---|---|---|
+| 长城 | **19.73%**（15,805/80,093） | 完全重复 13,060、同用户反复评论 7,645、星级-文本矛盾 1,716 |
+| 九层妖塔 | 15.94% | 完全重复、极短无信息、跨片复用 |
+| 泰囧 | 11.17% | 极短无信息、同用户反复评论、完全重复 |
+| 小时代3 | 10.59% | 极短无信息、跨片复用、完全重复 |
+
+《长城》被检出 1.3 万条完全重复文本 + 1,716 条「星级与文本情感相反」，与该片当年被指组织水军刷分的舆情吻合，
+说明信号设计能落到真实业务现象上（也说明结果是**可疑度**而非确证，需人工复核）。
+
+## 效果（验证集 15,000 条，与训练集不重叠）
+
+| 指标 | 数值 |
+|---|---|
+| 情感（好评/差评）准确率 | **87.4%**（校准阈值 0.289 下；阈值 0.5 下 86.0%） |
+| 好评类 F1 | **0.9222**（精确率 0.884 / 召回率 0.964） |
+| 情感 AUC（生产路径，4,000 条抽样） | 0.906 |
+| 评分预测准确率 / MAE | 0.744 / **0.256**（1~5 星） |
+| 训练集 | 150,000 条 × 2 epoch（占全量 7%，字符级词表 5,682） |
+
+**为什么要校准阈值**：模型在情感位的读数是「全词表 5,682 类」上的 softmax，`P(好)` 的绝对尺度会整体偏移
+（好评样本的 `P(好)` 中位数并不在 0.5 附近）。因此训练结束后用验证集扫描阈值，最大化好评类 F1，
+把 `sent_threshold` 写进 checkpoint，推理与 API 统一使用它 —— 这是把「概率排序能力」与「判定阈值」解耦的标准做法。
+
+> 踩坑记录：`evaluate()` 里曾用 `pair.argmax(-1)` 与 `gold == pos_id` 比较，但 `argmax=1` 表示「更倾向差」而
+> `g=1` 表示「标签是好」，语义相反 → 报告的准确率其实是 `1-acc`（0.128 ≈ 1-0.872）。
+> 该 bug 只影响逐 epoch 日志与 checkpoint 选择（校准用的是 `P(好)` 原始概率，因此不受影响）。
+> 已修复，并提供了 `python -m src.train --eval-only` 重新评测并清洗历史指标。
+
+## 三块需求的实现
+
+### 1. 好评 / 差评统计
+- 真实口径：`star>=4` 好评、`star==3` 中评、`star<=2` 差评。
+- 模型口径：decoder-only 两步解码得到每条影评 `P(好)`，`>=0.5` 记好评；同时给出平均预测评分。
+- 两种口径都落进 `artifacts/movie_summary.csv`，可交叉校验模型与星级的一致性。
+
+### 2. 电影打分
+```
+bayes_rating = (Σ star + m · C) / (n + m)            # m=100 先验条数，C=全局平均星级，抑制小样本虚高
+rating_score    = (bayes_rating - 1) / 4 × 10        # 贝叶斯星级 → 10 分制
+sentiment_score = 模型好评率 × 10
+final_score     = 0.6 × rating_score + 0.4 × sentiment_score
+confidence      = n / (n + m)                        # 评论越多样本置信度越高
+```
+
+### 3. 优点 / 缺点挖掘（`src/aspects.py`）
+1. 每部电影抽样（默认 4000 条）→ 按标点切小句，最多取 3 句；
+2. 小句命中 21 类**方面词词典**（剧情故事 / 演技表演 / 画面特效 / 配乐音效 / 节奏剪辑 / 结局结尾 …）后，
+   交给同一个 decoder-only 模型打分，得到该方面的 `P(好)`；
+3. 按方面聚合：提及数、好评率、点赞加权好评率，并保留每方面的**代表原句**（Top-3 证据）；
+4. 用 informative Dirichlet **log-odds ratio** 在「模型判好评」与「模型判差评」两个词袋间挖高频关键词；
+5. `好评率 ≥ 0.60` 且提及数达阈值 → 优点；`≤ 0.40` → 缺点，按「提及数 × 偏离度」排序取 Top-6。
+
+这样「优点/缺点」不是让大模型自由发挥的一句总结，而是**可回溯到具体方面词与原句证据**的统计结论。
+
+### 4. 刷评论（水军）检测（`src/spam.py`）
+数据集没有「刷评」人工标注，所以这里做的是**无监督可疑度打分 + 证据链**，而不是伪造一个监督指标。
+10 类信号全部向量化计算（200 万条不用 Python 逐行循环）：
+
+| 信号 | 判据 | 权重 |
+|---|---|---|
+| 完全重复（同片） | 去标点后文本完全相同，同片 ≥2 条 | 0.55 |
+| 跨片复用 | 同一段文字出现在 ≥3 部电影 | 0.45 |
+| 模板化开头 | 压缩重复字符后前 12 字相同，同片 ≥5 条 | 0.35 |
+| 广告导流 | 微信/VX/私聊/资源/福利/扫码/链接等关键词 | 0.60 |
+| 同日集中刷评 | 同一用户同一天在同一电影 ≥5 条 | 0.45 |
+| 同用户反复评论 | 同一用户对同一电影 ≥3 条 | 0.35 |
+| 单日爆量 | 该片当天评论数 > 全局 p99.9 | 0.20 |
+| **星级-文本矛盾** | 模型高置信情感与星级相反（5 星配强负面 / 1 星配强正面） | 0.50 |
+| 高赞短评 | 点赞 ≥300 且文本 ≤15 字（买赞嫌疑） | 0.40 |
+| 极短无信息 | 去标点后 ≤5 字 | 0.20 |
+
+`spam_score = min(1, Σ 命中权重)`，`≥0.5` 记为疑似刷评，并保留命中的信号名作为证据。
+「星级-文本矛盾」这一类直接复用 decoder-only 模型的 `P(好)`，是模型能力与业务需求结合的落点。
+每部电影输出**疑似比例、各信号命中数、最可疑样本 Top-8（含原文）**。
 
 ## 目录结构
-
 ```
-project3/
+├── data/DMSC.csv                # 原始数据（豆瓣电影短评，212 万条）
 ├── src/
-│   ├── config.py          # 全局配置：路径、标签、超参、告警阈值
-│   ├── generate_data.py   # 模拟生成 100 万外卖评价
-│   ├── vocab.py           # 字符级词表
-│   ├── dataset.py         # Dataset/DataLoader + 磁盘编码缓存(mmap)
-│   ├── model.py           # 从零实现 Transformer Encoder 分类器
-│   ├── train.py           # 训练脚本
-│   ├── retrain.py         # 主动学习增量再训练（消费 true_label）
-│   ├── predict.py         # 推理：打分 + MC Dropout 错误概率 + 温度校准
-│   ├── duplicate.py       # 评价查重 / 刷评论检测
-│   ├── keywords.py        # 差评高频词 / 问题维度分析
-│   └── store.py           # SQLite 样本存储与复核队列
+│   ├── config.py                # 路径 / 模型超参 / 训练超参 / Prompt 模板
+│   ├── vocab.py                 # 字符级词表
+│   ├── data.py                  # 清洗、去重、生成式编码、磁盘缓存（mmap）
+│   ├── model.py                 # decoder-only GPT（RoPE/RMSNorm/SwiGLU/KV cache）
+│   ├── train.py                 # 因果 LM 训练（只在监督位算 loss）
+│   ├── infer.py                 # 全量两步自回归推理（等长分组）
+│   ├── aspects.py               # 优缺点挖掘（方面词 + log-odds）
+│   ├── spam.py                  # 刷评论（水军）检测：10 类信号 + 可疑度打分
+│   ├── aggregate.py             # 统计、打分、报告导出
+│   └── lexicon.py               # 方面词词典
 ├── app/
-│   ├── main.py            # FastAPI 接口
-│   └── streamlit_app.py   # Streamlit 前端（调用 FastAPI）
-├── data/reviews.jsonl     # 生成的数据（text, label）
-├── outputs/               # 模型、词表、关键词、数据库、日志
-└── requirements.txt
+│   ├── main.py                  # FastAPI 接口
+│   ├── service.py               # 共享服务层
+│   └── streamlit_app.py         # Streamlit 看板
+├── scripts/run_all.sh           # 一键全流程
+└── artifacts/                   # 模型、缓存、预测、汇总表、报告
 ```
+
+## 数据
+原始数据 `data/DMSC.csv`（豆瓣电影短评，387MB / 212 万条）体积过大，**未纳入仓库**，请自行放到 `data/DMSC.csv`。
+字段：`ID, Movie_Name_EN, Movie_Name_CN, Crawl_Date, Number, Username, Date, Star, Comment, Like`。
+
+仓库里保留了跑完后体积很小的结果文件（`artifacts/movie_summary.csv`、`artifacts/分析报告.md`、
+`artifacts/spam_summary.json` 等），**克隆后不重跑也能直接看结论**；模型权重、分词缓存、逐条预测
+（约 500MB）按 `.gitignore` 排除，用 `bash scripts/run_all.sh` 可完整重建。
 
 ## 快速开始
 
 ```bash
 pip install -r requirements.txt
 
-# 1) 生成 100 万条模拟评价（约 7 秒）
-python -m src.generate_data --n 1000000 --out data/reviews.jsonl
+# 一键全流程（约 1.5 小时，MPS/CPU 均可）
+bash scripts/run_all.sh
 
-# 2) 训练（MPS/CPU 自动选择；1M×3 epoch 约 50 分钟，可先用 --max-samples 快速验证）
-python -m src.train --data data/reviews.jsonl --epochs 3
+# 或者分步
+python -m src.data                    # 数据准备（全量约 3 分钟）
+python -m src.train                   # 训练（400k 样本 × 2 epoch）
+python -m src.infer --batch-size 128  # 全量推理 212 万条
+python -m src.aspects                 # 优缺点挖掘
+python -m src.spam                    # 刷评论检测
+python -m src.aggregate               # 打分 + 报告
+python scripts/verify.py              # 结果自检
 
-# 3) 差评高频词 / 主要问题
-python -m src.keywords --data data/reviews.jsonl --scan-limit 50000
-
-# 4) 命令行推理
-python -m src.predict --text "等了两个小时，饭都凉了，差评！"
-
-# 5) 温度校准（让“错误概率”更可靠，可选）
-python -m src.predict --calibrate --max-samples 20000
-
-# 6) 启动后端接口
-uvicorn app.main:app --reload --port 8000
-# 打开接口文档 http://127.0.0.1:8000/docs
-
-# 7) 另开一个终端，启动 Streamlit 前端
-streamlit run app/streamlit_app.py
-# 浏览器会自动打开 http://127.0.0.1:8501
+# 服务
+uvicorn app.main:app --port 8000        # API 文档 http://127.0.0.1:8000/docs
+streamlit run app/streamlit_app.py      # 看板
 ```
 
-快速验证（小数据，几分钟）：
+小样本冒烟测试（约 2 分钟）：
 
 ```bash
-python -m src.generate_data --n 20000 --out data/sample.jsonl
-python -m src.train --data data/sample.jsonl --epochs 2
+python -m src.data --limit 20000 && python -m src.train --smoke && \
+python -m src.infer --limit 20000 && python -m src.aspects --per-movie 300 --limit 20000 && python -m src.aggregate
 ```
 
-## 判定与告警规则
+## 产物
+| 文件 | 内容 |
+|---|---|
+| `artifacts/model.pt` | 最佳 checkpoint（含指标） |
+| `artifacts/train_log.json` | 训练曲线与验证指标 |
+| `artifacts/preds/preds_*.parquet` | 每条影评的 `P(好)`、好评/差评、期望评分 |
+| `artifacts/movie_summary.csv` | 每部电影的好评/差评统计、评分、优缺点、疑似刷评比例 |
+| `artifacts/movie_pros_cons.json` | 优点/缺点 + 证据句 + 关键词 |
+| `artifacts/aspects.json` | 各方面词提及数/好评率/代表句 |
+| `artifacts/spam_reviews.parquet` | 每条影评的可疑度、命中信号、重复团伙大小 |
+| `artifacts/spam_summary.json/csv` | 每部电影的疑似刷评比例、各信号命中数、最可疑样本 |
+| `artifacts/分析报告.md` | 全部电影的可读报告 |
 
-- **情感分** `score ∈ [0,1]`：`score = 1·P(好评) + 0.5·P(中评) + 0·P(差评)`
-- **严重程度**：`score < 0.30` → 严重；`0.30 ≤ score < 0.55` → 警告；否则正常
-- **错误概率** `error_prob = 1 - max(P)`（对 MC Dropout 多次结果取平均），
-  取值越大说明模型越犹豫、越可能判错
-- **需立即处理** `need_process = score < 0.30`
-- **需人工复核** `need_review = error_prob ≥ 0.40`
-- 阈值集中定义在 `src/config.py`，可自行调整
-
-## 前端界面（Streamlit）
-
-前端通过 HTTP 调用 FastAPI 接口，默认地址 `http://127.0.0.1:8000`（可在左侧栏修改）。包含 6 个页面（侧边栏导航，美团风格）：
-
-- **评价识别**：输入评价 → 展示分类、满意度（1~5 星）、置信度、处理等级与告警，并给出概率柱状图。
-- **批量识别**：多行输入 → 汇总各大类数量与告警列表，表格查看全部结果。
-- **差评分析**：差评高频问题词柱状图 + 主要问题维度占比 + 各维度代表词。
-- **查重检测**：粘贴同一商品的多条评价 → 检测完全重复/近似重复，判定是否疑似刷评论。
-- **待核实评价**：待核实队列逐条处理，回填真实标签（写入样本库）或标记已处理。
-- **数据统计**：样本总数、待核实/待处理数量、平均满意度与类别分布。
-
-## API 一览
-
-| 方法 | 路径 | 说明 |
-| --- | --- | --- |
-| POST | `/predict` | 单条评价预测，返回标签/概率/分数/错误概率/告警 |
-| POST | `/predict/batch` | 批量预测，返回汇总与告警列表 |
-| GET | `/negative/keywords` | 差评高频词与问题维度报告 |
-| POST | `/negative/analyze` | 对传入的差评文本实时分析 |
-| GET | `/reviews` | 分页查询样本（支持标签/复核/处理筛选） |
-| GET | `/reviews/pending` | 待人工复核队列 |
-| POST | `/reviews/{id}/label` | 回填人工真实标签（存入样本库） |
-| POST | `/reviews/{id}/process` | 标记问题已处理 |
-| POST | `/duplicate/check` | 对多条评价做查重，返回重复率与疑似刷评论判定 |
-| GET | `/stats` | 总体统计（各类占比、待处理/待复核数、均分） |
-
-示例：
+## 测试
 
 ```bash
-curl -X POST localhost:8000/predict -H 'Content-Type: application/json' \
-  -d '{"text":"味道还行，但是配送有点慢，包装也洒了","save":true}'
+python -m pytest                 # 单元 + 产物一致性 + 接口，共 44 个用例，约 6 秒
+python scripts/verify.py         # 全量产物的验收自检（含分布/一致性/阈值）
 ```
 
-返回（节选）：
+`tests/` 覆盖四层，**其中 3 个用例是针对真实踩过的 bug 的回归测试**：
 
-```json
-{
-  "label": "差评",
-  "probs": {"好评": 0.058, "中评": 0.395, "差评": 0.546},
-  "score": 0.256,
-  "error_prob": 0.454,
-  "severity": "严重",
-  "need_process": true,
-  "need_review": true
-}
-```
+| 文件 | 覆盖内容 |
+|---|---|
+| `tests/test_data_pipeline.py` | 词表/模板编码、labels 是否落在生成目标上、中评屏蔽情感位、collate padding 对齐、**分桶采样器必须不丢样本**（回归）、长序列按 token 预算缩批 |
+| `tests/test_model_decode.py` | 因果性（改尾部不影响前面）、RoPE/RMSNorm、**两步 KV cache 解码必须等于整条序列一次前向**、`evaluate` 准确率方向（回归）、阈值校准方向（回归） |
+| `tests/test_spam_aspects.py` | 方面词切句与命中、词典无冲突、广告正则、分组建模、刷评权重与阈值可达性 |
+| `tests/test_artifacts.py` + `tests/test_api.py` | 全量产物交叉校验（分片无重复、行数守恒、得分域、优缺点证据、刷评分布、训练指标）+ 7 个 HTTP 端点（含 404/422 与正负样本方向性） |
 
-`error_prob=0.454 ≥ 0.40`，说明该条情绪矛盾、模型不确定，自动进入人工复核队列。
+测试同时暴露并修掉了一个真实 off-by-one：`make_full_ids` 的文本预算少留了 1 个 token，
+超长影评编码后会比 `max_len` 长 1（只影响 >130 字评论的截断，不影响已训练模型与推理前缀）。
 
-## 模型结构
+## 工程细节
+- 磁盘缓存用 `int16 flat ids + int32 offsets`，`np.load(mmap_mode='r')` 只读映射，212 万条不占内存。
+- 训练只在监督位把隐状态送进 LM Head（而非整条序列），显存与算力节省约两个数量级。
+- **长度分桶 + token 预算动态批**：按「长度/16」分桶取批，批大小 = `token_budget / 批宽度`（上限 128）。
+  padding 冗余从 2.75× 降到 ~1.15×，同时把反向传播的激活内存钉在常数上。这是本机（统一内存 8.6GB）
+  能跑通 144 长度训练的关键：固定 B=128、L=144 时 MPS 激活超过 3GB 会直接 OOM。
+- **限制 MPS 显存水位**：`src/__init__.py` 在导入 torch 前设置
+  `PYTORCH_MPS_HIGH_WATERMARK_RATIO=0.6`、`PYTORCH_MPS_LOW_WATERMARK_RATIO=0.0`。
+  默认水位（≈整机内存大小）会让系统陷入 swap 抖动，单步耗时从 0.7s 飙到 7s，还会 OOM。
+- 推理按长度精确分组（等长批、无 padding）；`P(好)` 与评分分布都来自受限词表，不需要额外分类头。
+- 情感阈值用验证集 F1 校准后写进 checkpoint（`sent_threshold`），修正正类偏多导致的概率漂移。
+- 数据按行号哈希分桶划分验证集，流式处理即可复现，无需全量载入。
 
-字符 Embedding → 正弦位置编码 → 3 × Transformer Encoder（Post-LN，4 头注意力）
-→ Masked Mean Pooling → LayerNorm → Dropout → 线性分类头。约 0.43M 参数，纯 PyTorch，
-无需预训练模型。细节见 `src/model.py`，实现风格与 `testcode/transformer.py` 保持一致。
+## 本机实测性能（Apple Silicon / MPS，统一内存 8.6GB）
+| 阶段 | 速度 | 全量耗时 |
+|---|---|---|
+| 数据准备（清洗+去重+编码 203.6 万条） | — | ~18 min |
+| 训练（15 万样本 × 2 epoch，4.62M 参数） | ~170-260 样本/s | ~40 min |
+| 全量推理（203.6 万条，两步自回归，分 4 段跑） | 520-800 条/s | ~66 min |
+| 优缺点挖掘（每部抽样 4000 条 → 10.9 万小句打分） | — | ~5 min |
+| 刷评论检测（10 类信号，全向量化） | — | ~4 min |
 
-## 查重 / 刷评论检测
+CPU 只有约 96 样本/s，因此默认优先用 MPS；`--device cpu` 可强制切换。
+推理必须分段 + 增量落盘：一次性跑 170 万条时被 MPS 分配器拖爆且**结果未落盘**，整段重跑；
+现在 `--start/--end` 分段 + 每 25 万行写一个 parquet，崩了最多损失 25 万条。
 
-判断一个商品是否存在刷评，核心看两类信号：
-
-1. **完全重复**：一字不差的评价出现多次（复制粘贴刷评）；
-2. **近似重复**：换几个字 / 加标点的模板化评价（用字符 n-gram 的 Jaccard 相似度做贪心聚类识别）。
-
-重复率 `= 1 - 聚类后唯一评价数 / 总评价数`，阈值在 `src/config.py` 的 `DUP_RATE_HIGH(0.40)` / `DUP_RATE_WARN(0.20)`：
-
-```bash
-# 命令行试一下
-python -m src.duplicate
-```
-
-前端「查重检测」页调用 `POST /duplicate/check`，返回重复率、判定结论，以及完全重复/近似重复的分组明细。
-
-## 主动学习闭环（增量再训练）
-
-系统会把 `error_prob` 高（模型不确定）的样本送入人工复核队列，人工回填真实标签后
-写入样本库的 `true_label` 字段。`src/retrain.py` 读取这些人工标注的“困难样本”，
-合入训练集做增量微调，形成「低置信 → 人工标注 → 再训练 → 更准」的闭环：
-
-```bash
-# 前提：已在前端“人工复核”标签页给若干样本回填了真实标签
-python -m src.retrain                          # 默认 1 epoch，lr=3e-5，20 万原始样本
-python -m src.retrain --epochs 2 --human-ratio 0.5
-python -m src.retrain --max-orig-samples 0     # 使用全部原始样本（更慢但更稳）
-```
-
-- 困难样本默认在每个 batch 中占 **30%**（`--human-ratio`），用加权采样上采样，避免被海量原始样本淹没。
-- 复用原始语料的磁盘编码缓存（mmap），不会重新编码 1M 语料。
-- 微调前后在「困难样本验证集」+「整体回归集」上评估，报告写入 `outputs/retrain_report.json`。
-- 写回 `outputs/model.pt` 前会备份旧模型到 `outputs/model.pt.before_retrain`；重启后端后生效。
-
-## 换成真实数据
-
-数据格式为每行一个 JSON：`{"text": "评价内容", "label": 0}`，其中 `label` 取 `0=好评, 1=中评, 2=差评`。
-替换 `data/reviews.jsonl` 后重新运行 `src.train` 与 `src.keywords` 即可（首次会重建编码缓存）。
-删除 `outputs/encoded_*.npy` 与 `outputs/*_meta.json` 可强制重新编码。
-
-## 说明与可扩展方向
-
-- 模拟数据由短语模板组合生成，并注入约 **8% 标注噪声**与 **20% 边界样本**（好评/差评中混入轻微反向描述），
-  因此验证集准确率约 85% 左右属正常，且能让“判断可能错误的概率”真正有意义；真实场景请替换为线上数据。
-  可用 `--label-noise`、`--mix-ratio`（见 `src/config.py`）调节任务难度。
-- 可扩展：接入预训练中文 BERT 提升精度、把 `error_prob` 高的样本优先排进人工复核队列
-  （主动学习采样策略）；增量再训练已由 `src/retrain.py` 实现。

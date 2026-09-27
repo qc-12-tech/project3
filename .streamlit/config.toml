@@ -1,15 +1,16 @@
-# 美团黄主题：让 Streamlit 所有原生控件（按钮/单选/复选/滑块/链接等）统一变黄，
-# 比手写 CSS 更稳定、更一致。
-[theme]
-primaryColor = "#FFB300"
-backgroundColor = "#F5F6F7"
-secondaryBackgroundColor = "#FFFFFF"
-textColor = "#1A1A1A"
-
-# 隐藏右上角的 Streamlit 原生工具栏（Deploy 按钮 + ☰ 菜单里的 Rerun/Settings/Print 等英文项）。
-# Streamlit 这些内置文字是写死的英文、不支持汉化，只能整体隐藏；应用本体已全中文。
+# Streamlit 运行配置：隐藏右上角英文工具栏（Deploy / Rerun / Settings ...）与底部水印
+# toolbarMode = "minimal" 只保留必要的主菜单，去掉 Deploy 按钮与开发者选项
 [client]
 toolbarMode = "minimal"
+showErrorDetails = true
+showSidebarNavigation = false
 
 [browser]
 gatherUsageStats = false
+
+[server]
+headless = true
+
+[theme]
+base = "light"
+primaryColor = "#E5484D"      # 与看板里「好评/差评」配色一致

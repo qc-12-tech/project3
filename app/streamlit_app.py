@@ -1,397 +1,165 @@
-"""美团外卖 · 评价管理中心（Streamlit 前端）。
+"""Streamlit 前端：电影评价分析看板。
 
-视觉：美团黄主题（.streamlit/config.toml 提供主色）+ 少量安全 CSS；
-布局：全部使用 Streamlit 原生控件（container(border=True) / columns / metric），
-避免用自定义 HTML 包裹原生控件导致的错位。文案去 AI 化。
-
-启动（两个终端）：
-    # 1) 后端
-    uvicorn app.main:app --port 8000
-    # 2) 前端
-    streamlit run app/streamlit_app.py
+启动：streamlit run app/streamlit_app.py
 """
-import json
+import sys
+from pathlib import Path
 
 import pandas as pd
-import requests
 import streamlit as st
 
-DEFAULT_API = "http://127.0.0.1:8000"
+ROOT = Path(__file__).resolve().parents[1]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
 
-st.set_page_config(page_title="外卖评价管理中心", page_icon="🛵", layout="wide")
+from app.service import aspects, movie_list, predict_text, sample_reviews, spam    # noqa: E402
 
-# ---------------- 少量安全 CSS（只做圆角/字重，不搞跨元素 div 包裹） ----------------
-_CSS = """
-<style>
-.block-container { padding-top: 1.2rem; }
-/* 主按钮：美团黄底 + 深色文字（保证黄色底上的可读性） */
-.stButton > button {
-    background: linear-gradient(180deg, #ffd43b, #ffb300);
-    color: #1a1a1a;
-    border: none;
-    border-radius: 8px;
-    font-weight: 700;
-}
-.stButton > button:hover, .stButton > button:active, .stButton > button:focus {
-    background: linear-gradient(180deg, #ffd43b, #ffb000);
-    color: #1a1a1a;
-    border: none;
-}
-.stTextArea textarea, .stTextInput input { border-radius: 8px; }
-[data-testid="stMetric"] { border-radius: 12px; }
-
-/* 徽标（自包含、单行，安全） */
-.mt-badge {
-    display: inline-block; padding: 1px 10px; border-radius: 999px;
-    font-size: 0.8rem; font-weight: 600; line-height: 1.6;
-}
-.mt-star { color: #ffb300; letter-spacing: 1px; }
-.mt-star-empty { color: #e0e0e0; letter-spacing: 1px; }
-</style>
-"""
-st.markdown(_CSS, unsafe_allow_html=True)
-
-# ---------------- 配色与文案 ----------------
-LABEL_COLOR = {"好评": "#00b578", "中评": "#ff8a00", "差评": "#ff4d4f"}
-SEV_COLOR = {"严重": "#ff4d4f", "警告": "#ff8a00", "正常": "#00b578"}
-SEV_TEXT = {"严重": "严重", "警告": "关注", "正常": "正常"}
-DUP_LEVEL = {"high": ("#ff4d4f", "疑似刷评论"), "medium": ("#ff8a00", "需关注"), "normal": ("#00b578", "正常")}
+st.set_page_config(page_title="电影评价分析（decoder-only Transformer）", page_icon="🎬", layout="wide")
 
 
-def badge(text, color):
-    return (f'<span class="mt-badge" style="background:{color}1A;color:{color};">'
-            f'{text}</span>')
+@st.cache_data(show_spinner=False)
+def _movies():
+    return movie_list()
 
 
-def label_badge(label):
-    return badge(label, LABEL_COLOR.get(label, "#666"))
+@st.cache_data(show_spinner=False)
+def _aspects(mid):
+    return aspects().get(str(mid))
 
 
-def sev_badge(sev):
-    return badge(SEV_TEXT.get(sev, sev), SEV_COLOR.get(sev, "#666"))
+try:
+    movies = _movies()
+except Exception as e:                                        # noqa: BLE001
+    st.error(f"还没有聚合结果，请先运行完整流程：\n\n```\npython -m src.data && python -m src.train && "
+             f"python -m src.infer && python -m src.aspects && python -m src.aggregate\n```\n\n错误：{e}")
+    st.stop()
 
-
-def star_html(rating):
-    full = max(1, min(5, int(round(rating))))
-    return (f'<span class="mt-star">{"★" * full}</span>'
-            f'<span class="mt-star-empty">{"☆" * (5 - full)}</span>')
-
-
-def score_to_rating(score):
-    """满意度 score 0~1 -> 1~5 星。"""
-    return round(1.0 + 4.0 * score, 1)
-
-
-def render_alerts(res):
-    """用原生提示组件渲染预警（红/橙/绿，稳定不跑版）。"""
-    if res.get("need_process"):
-        st.error("⚠️ 差评预警：该评价情绪负面，建议尽快联系顾客处理")
-    if res.get("need_review"):
-        st.warning("🧐 系统存疑：该评价情绪较模糊，建议人工核实")
-    if not res.get("need_process") and not res.get("need_review"):
-        st.success("识别稳定，无需额外处理")
-
-
-# ---------------- API 封装 ----------------
-# 关键：trust_env=False 忽略系统代理。macOS 上若有 Clash/V2Ray 等本地代理，
-# requests 默认会把 127.0.0.1 的请求也转发到代理，导致 502 Bad Gateway。
-_SESSION = requests.Session()
-_SESSION.trust_env = False
-
-
-def api_get(base, path, params=None):
-    try:
-        r = _SESSION.get(base + path, params=params, timeout=30)
-        r.raise_for_status()
-        return r.json(), None
-    except Exception as e:
-        return None, str(e)
-
-
-def api_post(base, path, payload):
-    try:
-        r = _SESSION.post(base + path, json=payload, timeout=120)
-        r.raise_for_status()
-        return r.json(), None
-    except requests.HTTPError as e:
-        return None, f"{e} - {r.text}"
-    except Exception as e:
-        return None, str(e)
-
-
-# ---------------- 侧边栏 ----------------
-st.sidebar.markdown("**🛵 评价管理中心**")
-st.sidebar.caption("外卖商家运营台")
-nav = st.sidebar.radio(
-    "导航",
-    ["评价识别", "批量识别", "差评分析", "查重检测", "待核实评价", "数据统计"],
-    label_visibility="collapsed")
+# ------------------------------------------------------------------ 侧边栏
+st.sidebar.title("🎬 电影评价分析")
+st.sidebar.caption("decoder-only（GPT 式）因果语言模型 · 从零训练")
+names = {f"{m['movie_cn']}（{m['movie_en']}）": m for m in movies}
+pick = st.sidebar.selectbox("选择电影", list(names.keys()))
+m = names[pick]
+mid = int(m["movie_id"])
 
 st.sidebar.markdown("---")
-st.sidebar.caption("服务地址")
-base = st.sidebar.text_input("FastAPI 地址", DEFAULT_API, label_visibility="collapsed")
-if st.sidebar.button("检测连接"):
-    info, err = api_get(base, "/")
-    if err:
-        st.sidebar.error(f"连接失败：{err}")
-    else:
-        st.sidebar.success("连接成功")
+st.sidebar.markdown("**全站排行（综合分）**")
+rank = pd.DataFrame([{"电影": x["movie_cn"], "分数": float(x["final_score"])} for x in movies[:10]])
+st.sidebar.dataframe(rank, hide_index=True, use_container_width=True)
 
-st.sidebar.markdown("---")
-st.sidebar.caption(
-    "满意度 1~5 星由系统按好评/中评/差评综合给出；"
-    "低于 2.2 星建议尽快处理，存疑评价建议人工核实。阈值可在 src/config.py 调整。")
+# ------------------------------------------------------------------ 头部
+st.title(f"{m['movie_cn']} · {m['movie_en']}")
+c1, c2, c3, c4, c5 = st.columns(5)
+c1.metric("综合评分", f"{float(m['final_score']):.2f} / 10")
+c2.metric("贝叶斯均分", f"{float(m['bayes_rating']):.2f} / 5")
+c3.metric("影评总数", f"{int(m['n_reviews']):,}")
+c4.metric("好评 / 差评", f"{int(m['star_pos']):,} / {int(m['star_neg']):,}")
+c5.metric("模型好评率", f"{float(m['model_pos_rate']):.1%}")
+st.caption(f"模型判定：好评 {int(m['model_pos']):,} 条 · 差评 {int(m['model_neg']):,} 条 · "
+           f"中评 {int(m['star_mid']):,} 条｜置信度 {float(m['confidence']):.2f}｜点赞合计 {int(m['likes_sum']):,}")
 
-# ---------------- 顶部品牌区 ----------------
-st.markdown(
-    '<div style="height:4px;background:linear-gradient(90deg,#ffc300,#ff8a00);'
-    'border-radius:3px;margin-bottom:10px;"></div>',
-    unsafe_allow_html=True)
-st.markdown("## 🛵 外卖评价管理中心")
-st.caption("评价自动分类 · 差评预警 · 问题洞察 · 人工核实")
-st.divider()
+tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 评价统计", "👍 优点 / 👎 缺点", "🗒 影评样本", "🚨 刷评论检测", "✍️ 单条预测"])
 
-# ============================================================
-# 1) 评价识别（单条）
-# ============================================================
-if nav == "评价识别":
-    with st.container(border=True):
-        st.markdown("**识别一条评价**")
-        st.caption("粘贴顾客评价，系统自动分类并给出满意度与处理建议")
-        text = st.text_area(
-            "评价内容", "等了两个小时才送到，饭都凉了，包装还破了，差评！", height=110,
-            label_visibility="collapsed")
-        c1, c2, _ = st.columns([1, 1, 2])
-        save = c1.checkbox("记录到后台", value=True)
-        submit = c2.button("识别评价", type="primary")
+# ------------------------------------------------------------------ 统计
+with tab1:
+    left, right = st.columns(2)
+    with left:
+        st.subheader("真实星级分布 → 好评 / 中评 / 差评")
+        dist = pd.DataFrame({"类别": ["好评(4-5星)", "中评(3星)", "差评(1-2星)"],
+                             "条数": [int(m["star_pos"]), int(m["star_mid"]), int(m["star_neg"])]}).set_index("类别")
+        st.bar_chart(dist)
+        st.dataframe(dist.assign(占比=(dist["条数"] / dist["条数"].sum()).map("{:.2%}".format)))
+    with right:
+        st.subheader("模型判定（decoder-only 生成式情感）")
+        dist2 = pd.DataFrame({"类别": ["好评", "差评"],
+                              "条数": [int(m["model_pos"]), int(m["model_neg"])]}).set_index("类别")
+        st.bar_chart(dist2)
+        st.dataframe(pd.DataFrame({"指标": ["模型好评率", "真实好评率", "模型平均预测评分", "真实平均星级"],
+                                   "数值": [f"{float(m['model_pos_rate']):.2%}", f"{float(m['star_pos_rate']):.2%}",
+                                            f"{float(m['pred_rating_mean']):.2f}", f"{float(m['star_mean']):.2f}"]}))
 
-    if submit:
-        if not text.strip():
-            st.info("请输入评价内容")
+# ------------------------------------------------------------------ 优缺点
+with tab2:
+    a = _aspects(mid)
+    pc1, pc2 = st.columns(2)
+    with pc1:
+        st.subheader("👍 优点")
+        if m["pros_detail"]:
+            for p in m["pros_detail"]:
+                st.markdown(f"**{p['aspect']}**（提及 {p['mentions']} 次，好评率 {p['pos_rate']:.0%}）")
+                for ev in p["evidence"]:
+                    st.caption(f"“{ev}”")
         else:
-            res, err = api_post(base, "/predict", {"text": text, "save": save})
-            if err:
-                st.error(f"请求失败：{err}")
-            else:
-                rating = score_to_rating(res["score"])
-                confidence = round((1 - res["error_prob"]) * 100, 1)
-                c1, c2, c3, c4 = st.columns(4)
-                c1.metric("评价分类", res["label"])
-                c2.metric("满意度", f"{rating} 分")
-                c3.metric("识别置信度", f"{confidence}%")
-                c4.metric("处理等级", SEV_TEXT.get(res["severity"], res["severity"]))
-                st.markdown(
-                    f'{star_html(rating)}　<span style="color:#666;">{rating} / 5.0</span>　'
-                    f'{label_badge(res["label"])}　{sev_badge(res["severity"])}',
-                    unsafe_allow_html=True)
-                render_alerts(res)
-                with st.container(border=True):
-                    st.markdown("**分类倾向**")
-                    probs = pd.DataFrame(
-                        {"类别": list(res["probs"].keys()),
-                         "概率": list(res["probs"].values())}).set_index("类别")
-                    st.bar_chart(probs, height=240)
-                with st.expander("查看明细"):
-                    st.json(res, expanded=False)
-
-# ============================================================
-# 2) 批量识别
-# ============================================================
-elif nav == "批量识别":
-    with st.container(border=True):
-        st.markdown("**批量识别**")
-        st.caption("每行一条评价，一次性完成分类与预警汇总")
-        default = "味道很好，还会再点\n一般般吧，没什么惊喜\n太难吃了，再也不来\n包装破了，汤洒了一袋子"
-        bulk = st.text_area("评价列表", default, height=150, label_visibility="collapsed")
-        c1, c2, _ = st.columns([1, 1, 2])
-        save_b = c1.checkbox("记录到后台", value=True)
-        submit_b = c2.button("批量识别", type="primary")
-
-    if submit_b:
-        texts = [t.strip() for t in bulk.splitlines() if t.strip()]
-        if not texts:
-            st.info("请输入至少一条评价")
+            st.info("没有达到阈值的优点方面词")
+        if m["keywords_pos"]:
+            st.markdown("**好评高频词**：" + " · ".join(m["keywords_pos"]))
+    with pc2:
+        st.subheader("👎 缺点")
+        if m["cons_detail"]:
+            for c in m["cons_detail"]:
+                st.markdown(f"**{c['aspect']}**（提及 {c['mentions']} 次，好评率 {c['pos_rate']:.0%}）")
+                for ev in c["evidence"]:
+                    st.caption(f"“{ev}”")
         else:
-            res, err = api_post(base, "/predict/batch", {"texts": texts, "save": save_b})
-            if err:
-                st.error(f"请求失败：{err}")
-            else:
-                s = res["summary"]
-                c1, c2, c3, c4, c5 = st.columns(5)
-                c1.metric("总数", s["total"])
-                c2.metric("好评", s["good"])
-                c3.metric("中评", s["neutral"])
-                c4.metric("差评", s["bad"])
-                c5.metric("待处理", s["need_process"])
-                if res["alerts"]:
-                    with st.container(border=True):
-                        st.markdown("**预警列表**")
-                        for a in res["alerts"]:
-                            st.markdown(
-                                f'{label_badge(a["label"])}　{sev_badge(a["severity"])}　'
-                                f'{a["text"]}',
-                                unsafe_allow_html=True)
-                            render_alerts(a)
-                with st.container(border=True):
-                    st.markdown("**全部结果**")
-                    df = pd.DataFrame([{
-                        "评价": r["text"], "分类": r["label"],
-                        "满意度": score_to_rating(r["score"]),
-                        "置信度": f"{round((1 - r['error_prob']) * 100, 1)}%",
-                        "处理等级": SEV_TEXT.get(r["severity"], r["severity"]),
-                        "需处理": "是" if r["need_process"] else "否",
-                        "需核实": "是" if r["need_review"] else "否",
-                    } for r in res["results"]])
-                    st.dataframe(df, use_container_width=True)
+            st.info("没有达到阈值的缺点方面词")
+        if not m["cons_detail"] and m.get("weak_detail"):
+            st.markdown("**相对短板**（无明显差评集中，但好评率最低）")
+            for w in m["weak_detail"]:
+                st.markdown(f"- {w['aspect']}（提及 {w['mentions']} 次，好评率 {w['pos_rate']:.0%}）")
+                for ev in w["evidence"][:1]:
+                    st.caption(f"“{ev}”")
+        if m["keywords_neg"]:
+            st.markdown("**差评高频词**：" + " · ".join(m["keywords_neg"]))
+    if a:
+        st.markdown("---")
+        st.subheader("各方面词极性（按提及数排序）")
+        rows = [{"方面": r["aspect"], "提及数": r["mentions"], "好评率": r["pos_rate"],
+                 "点赞加权好评率": r["like_weighted_pos_rate"]} for r in a["aspects"]]
+        st.dataframe(pd.DataFrame(rows), hide_index=True, use_container_width=True)
+        st.bar_chart(pd.DataFrame(rows).set_index("方面")["好评率"])
 
-# ============================================================
-# 3) 差评分析
-# ============================================================
-elif nav == "差评分析":
-    top_k = st.slider("问题词数量", 5, 50, 20)
-    report, err = api_get(base, "/negative/keywords", {"top_k": top_k})
-    if err:
-        st.error(f"请求失败：{err}")
-    else:
-        st.caption(f"基于 {report.get('n_negative')} 条差评 / {report.get('n_overall')} 条整体评价"
-                   f" · 生成于 {report.get('generated_at')}")
-        kws = report.get("top_keywords", [])
-        if kws:
-            with st.container(border=True):
-                st.markdown("**高频问题词**")
-                kw_df = pd.DataFrame(kws)
-                st.bar_chart(kw_df.set_index("word")["count"], height=300)
-                st.dataframe(kw_df, use_container_width=True)
-        aspects = report.get("aspects", [])
-        if aspects:
-            with st.container(border=True):
-                st.markdown("**问题维度分布**")
-                a_df = pd.DataFrame([{"维度": a["aspect"], "占比": a["ratio"], "次数": a["count"]}
-                                     for a in aspects]).set_index("维度")
-                st.bar_chart(a_df["占比"], height=280)
-                for a in aspects:
-                    words = " / ".join(w["word"] for w in a["words"])
-                    st.markdown(f"**{a['aspect']}（{a['ratio']*100:.1f}%）**：{words}")
-
-# ============================================================
-# 4) 查重检测（刷评论识别）
-# ============================================================
-elif nav == "查重检测":
-    with st.container(border=True):
-        st.markdown("**评价查重 / 刷评论检测**")
-        st.caption("粘贴同一商品的多条评价（每行一条），检测是否存在重复或模板化刷评")
-        default = ("味道很好，下次还来\n味道很好，下次还来\n味道很好，下次还来\n"
-                   "味道很好 下次还来！\n味道不错，下次再来\n配送很快，包装完好\n"
-                   "分量很足，性价比高\n太咸了，不好吃")
-        dup_text = st.text_area("评价列表", default, height=180, label_visibility="collapsed")
-        dup_btn = st.button("开始检测", type="primary")
-    if dup_btn:
-        texts = [t.strip() for t in dup_text.splitlines() if t.strip()]
-        if len(texts) < 2:
-            st.info("请至少输入 2 条评价")
-        else:
-            res, err = api_post(base, "/duplicate/check", {"texts": texts})
-            if err:
-                st.error(f"请求失败：{err}")
-            else:
-                color, _ = DUP_LEVEL.get(res["level"], DUP_LEVEL["normal"])
-                c1, c2, c3, c4 = st.columns(4)
-                c1.metric("评价总数", res["total"])
-                c2.metric("唯一评价数", res["unique_count"])
-                c3.metric("重复率", f"{res['dup_rate']*100:.1f}%")
-                c4.metric("结论", res["verdict"].split("，")[0])
-                st.markdown(badge(res["verdict"], color), unsafe_allow_html=True)
-                if res["exact_dup_groups"]:
-                    st.markdown("**完全重复（复制粘贴）**")
-                    edf = pd.DataFrame(res["exact_dup_groups"]).rename(
-                        columns={"text": "评价内容", "count": "出现次数"})
-                    st.dataframe(edf, use_container_width=True)
-                if res["near_dup_groups"]:
-                    st.markdown("**近似重复（模板化刷评）**")
-                    for g in res["near_dup_groups"]:
-                        sim = f"{g['similarity']*100:.0f}%"
-                        st.markdown(
-                            f"相似度 {sim} · 共 {g['count']} 条：`{'` ｜ `'.join(g['texts'])}`")
-                if not res["exact_dup_groups"] and not res["near_dup_groups"]:
-                    st.success("未发现明显重复，评价内容较多样")
-
-# ============================================================
-# 5) 待核实评价（人工复核）
-# ============================================================
-elif nav == "待核实评价":
-    pending, err = api_get(base, "/reviews/pending", {"limit": 50})
-    if err:
-        st.error(f"请求失败：{err}")
-    else:
+# ------------------------------------------------------------------ 影评样本
+with tab3:
+    pol = st.radio("查看", ["好评", "差评"], horizontal=True)
+    revs = sample_reviews(mid, "pos" if pol == "好评" else "neg", 20)
+    if not revs:
+        st.info("没有样本")
+    for r in revs:
         with st.container(border=True):
-            st.markdown("**待核实评价**")
-            st.caption(f"系统存疑的评价，请人工确认真实分类（共 {pending['count']} 条）")
-            if not pending["count"]:
-                st.success("当前没有待核实评价 🎉")
-            else:
-                options = {f"#{it['id']} · {it['text'][:32]}": it for it in pending["items"]}
-                choice = st.radio("选择一条评价", list(options.keys()),
-                                  label_visibility="collapsed")
-                item = options[choice]
-                try:
-                    probs = json.loads(item["probs"])
-                except Exception:
-                    probs = item["probs"]
-                rating = score_to_rating(item["score"])
-                st.markdown(
-                    f'{label_badge(item["pred_label"])}　{sev_badge(item["severity"])}　'
-                    f'{star_html(rating)}　<span style="color:#666;">{rating} / 5.0</span>',
-                    unsafe_allow_html=True)
-                st.write(f"**评价内容：** {item['text']}")
-                st.write(f"**系统分类：** {item['pred_label']}　|　满意度 {rating} 分　|　"
-                         f"置信度 {round((1 - item['error_prob']) * 100, 1)}%")
-                st.write(f"**分类倾向：** {probs}")
-                c1, c2 = st.columns([1, 1])
-                with c1:
-                    label = st.selectbox("确认真实分类", ["好评", "中评", "差评"])
-                    if st.button("提交核实结果", type="primary"):
-                        _, e = api_post(base, f"/reviews/{item['id']}/label",
-                                        {"true_label": label})
-                        if e:
-                            st.error(f"提交失败：{e}")
-                        else:
-                            st.success("已提交，结果将用于后续优化识别")
-                            st.rerun()
-                with c2:
-                    if st.button("标记为已处理"):
-                        _, e = api_post(base, f"/reviews/{item['id']}/process", {})
-                        if e:
-                            st.error(f"操作失败：{e}")
-                        else:
-                            st.success("已标记处理")
-                            st.rerun()
+            st.write(r["comment"])
+            st.caption(f"真实星级 {r['star']} ★｜点赞 {r['likes']}｜模型 P(好)={r['p_pos']}｜"
+                       f"模型预测评分 {r['pred_rating']}")
 
-# ============================================================
-# 6) 数据统计
-# ============================================================
-else:
-    stats, err = api_get(base, "/stats")
-    if err:
-        st.error(f"请求失败：{err}")
+# ------------------------------------------------------------------ 刷评论检测
+with tab4:
+    s = spam().get(mid)
+    if not s:
+        st.info("还没有刷评论检测结果，请运行 `python -m src.spam`")
     else:
-        c1, c2, c3, c4 = st.columns(4)
-        c1.metric("评价总数", stats["total"])
-        c2.metric("待核实", stats["pending_review"])
-        c3.metric("待处理", stats["pending_process"])
-        avg = stats["avg_score"]
-        c4.metric("平均满意度", f"{score_to_rating(avg)} 分" if avg is not None else "—")
-        by_label = stats.get("by_label") or {}
-        if by_label:
+        c1, c2, c3 = st.columns(3)
+        c1.metric("疑似刷评", f"{s['n_suspect']:,} 条")
+        c2.metric("疑似占比", f"{s['suspect_rate']:.2%}")
+        c3.metric("平均可疑度", f"{s['mean_spam_score']:.3f}")
+        st.caption(f"判定阈值 0.50；单日评论量爆量阈值 p99.9 = {s['day_burst_p999']:.0f} 条/天。"
+                   f"刷评检测是**无监督可疑度**（数据集没有人工标注），不是确证。")
+        zh = {"dup_same_movie": "完全重复(同片)", "dup_cross_movie": "跨片复用", "template": "模板化开头",
+              "ad": "广告导流", "user_burst": "同日集中刷评", "user_repeat": "同用户反复评论",
+              "movie_day_burst": "单日爆量", "rating_mismatch": "星级与文本情感矛盾",
+              "like_bomb": "高赞短评", "low_info": "极短无信息"}
+        hit = pd.DataFrame({"信号": [zh.get(k, k) for k in s["by_type"]],
+                            "命中条数": list(s["by_type"].values())}).set_index("信号").sort_values("命中条数", ascending=False)
+        st.bar_chart(hit[hit["命中条数"] > 0])
+        st.dataframe(hit, use_container_width=True)
+        st.subheader("最可疑样本")
+        for r in s["top_suspects"]:
             with st.container(border=True):
-                st.markdown("**分类分布**")
-                df = pd.DataFrame({"类别": list(by_label.keys()),
-                                   "数量": list(by_label.values())}).set_index("类别")
-                st.bar_chart(df, height=300)
-        with st.expander("查看明细"):
-            st.json(stats, expanded=False)
+                st.write(r["comment"])
+                st.caption(f"可疑度 {r['spam_score']}｜星级 {r['star']} ★｜点赞 {r['likes']}｜命中 "
+                           f"{'、'.join(zh.get(x, x) for x in r['reasons'].split('|'))}")
 
-# ---------------- 页脚 ----------------
-st.markdown(
-    '<div style="text-align:center;color:#c0c0c0;font-size:0.78rem;margin-top:20px;">'
-    '本页面仅供商家运营参考，最终处理结果以实际情况为准</div>',
-    unsafe_allow_html=True)
+# ------------------------------------------------------------------ 单条预测
+with tab5:
+    text = st.text_area("输入一条影评，decoder-only 模型两步自回归解码给出好评/差评与评分",
+                        "剧情拖沓，特效还行，演员表演在线，但结局太仓促了。", height=120)
+    if st.button("预测", type="primary"):
+        st.json(predict_text(text.strip()))

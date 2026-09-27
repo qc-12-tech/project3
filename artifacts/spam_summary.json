@@ -1,0 +1,2242 @@
+[
+ {
+  "movie_id": 0,
+  "movie_cn": "七月与安生",
+  "movie_en": "Soulmate",
+  "n_reviews": 66116,
+  "n_suspect": 4234,
+  "suspect_rate": 0.064,
+  "mean_spam_score": 0.0783,
+  "by_type": {
+   "dup_same_movie": 2772,
+   "dup_cross_movie": 1682,
+   "template": 604,
+   "ad": 296,
+   "user_burst": 0,
+   "user_repeat": 5008,
+   "movie_day_burst": 0,
+   "rating_mismatch": 556,
+   "like_bomb": 2,
+   "low_info": 3432
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "出乎意料的好看(｡･ω･｡)ﾉ♡",
+    "star": 4,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "哭成傻逼",
+    "star": 4,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "从头哭到尾",
+    "star": 4,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "手动再见",
+    "star": 2,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "意外的惊喜。",
+    "star": 4,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "意外的还可以。",
+    "star": 4,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "比想象的好👍",
+    "star": 4,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "意外地好看",
+    "star": 4,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 1,
+  "movie_cn": "九层妖塔",
+  "movie_en": "Chronicles of the Ghostly Tribe",
+  "n_reviews": 42314,
+  "n_suspect": 6744,
+  "suspect_rate": 0.1594,
+  "mean_spam_score": 0.1398,
+  "by_type": {
+   "dup_same_movie": 5357,
+   "dup_cross_movie": 2415,
+   "template": 1359,
+   "ad": 182,
+   "user_burst": 0,
+   "user_repeat": 1542,
+   "movie_day_burst": 0,
+   "rating_mismatch": 806,
+   "like_bomb": 3,
+   "low_info": 3486
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "退票！！！",
+    "star": 1,
+    "likes": 437,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "去你妈的！",
+    "star": 1,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "浪费我的时间。。",
+    "star": 1,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "太难看了",
+    "star": 1,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "毁了毁了",
+    "star": 1,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "什 么 鬼 。。。",
+    "star": 1,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "不知所云",
+    "star": 2,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "烂就一个字 我只说一次",
+    "star": 1,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 2,
+  "movie_cn": "何以笙箫默",
+  "movie_en": "My Sunshine",
+  "n_reviews": 25212,
+  "n_suspect": 2468,
+  "suspect_rate": 0.0979,
+  "mean_spam_score": 0.0963,
+  "by_type": {
+   "dup_same_movie": 1284,
+   "dup_cross_movie": 1527,
+   "template": 75,
+   "ad": 121,
+   "user_burst": 0,
+   "user_repeat": 845,
+   "movie_day_burst": 0,
+   "rating_mismatch": 659,
+   "like_bomb": 2,
+   "low_info": 2375
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "前几分钟还在兴致勃勃的组织着各种吐槽语。可没过多久就决定放弃了，这样的电影实在很难几句话就喷完。其剧情之狗血，台词之矫情，表演之生硬，叙事之混乱，以及男女主如拉",
+    "star": 1,
+    "likes": 2010,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|ad"
+   },
+   {
+    "comment": "太烂了······",
+    "star": 1,
+    "likes": 135,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "不能更烂",
+    "star": 1,
+    "likes": 112,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "还不如小时代",
+    "star": 2,
+    "likes": 28,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "看不下去…",
+    "star": 1,
+    "likes": 26,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "还不如小时代",
+    "star": 1,
+    "likes": 23,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "呵呵……",
+    "star": 1,
+    "likes": 22,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "怎一个烂字了得",
+    "star": 1,
+    "likes": 16,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 3,
+  "movie_cn": "你的名字",
+  "movie_en": "Your Name",
+  "n_reviews": 108409,
+  "n_suspect": 9295,
+  "suspect_rate": 0.0857,
+  "mean_spam_score": 0.101,
+  "by_type": {
+   "dup_same_movie": 6652,
+   "dup_cross_movie": 3650,
+   "template": 1607,
+   "ad": 929,
+   "user_burst": 67,
+   "user_repeat": 9352,
+   "movie_day_burst": 0,
+   "rating_mismatch": 650,
+   "like_bomb": 8,
+   "low_info": 7573
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "假，大，空。",
+    "star": 1,
+    "likes": 7844,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "新海诚，是动画之耻。",
+    "star": 1,
+    "likes": 3616,
+    "spam_score": 1.0,
+    "reasons": "user_repeat|rating_mismatch|like_bomb"
+   },
+   {
+    "comment": "错过和努力才是爱和青春的墓志铭",
+    "star": 5,
+    "likes": 2006,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|like_bomb"
+   },
+   {
+    "comment": "好一般啊。。。",
+    "star": 3,
+    "likes": 234,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "华而不实~",
+    "star": 3,
+    "likes": 101,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "世间所有的相遇都是久别重逢。",
+    "star": 5,
+    "likes": 53,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|template"
+   },
+   {
+    "comment": "非常好看。",
+    "star": 5,
+    "likes": 13,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "看哭了。",
+    "star": 5,
+    "likes": 10,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 4,
+  "movie_cn": "十二生肖",
+  "movie_en": "Chinese Zodiac",
+  "n_reviews": 44336,
+  "n_suspect": 3725,
+  "suspect_rate": 0.084,
+  "mean_spam_score": 0.0893,
+  "by_type": {
+   "dup_same_movie": 2263,
+   "dup_cross_movie": 1884,
+   "template": 112,
+   "ad": 239,
+   "user_burst": 51,
+   "user_repeat": 2453,
+   "movie_day_burst": 0,
+   "rating_mismatch": 553,
+   "like_bomb": 1,
+   "low_info": 3793
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "成龙去到一个地方执行任务，轻易闯入，轻易得手，离开的时候被发现，大打一架；成龙去到一个地方执行任务，轻易闯入，轻易得手，离开的时候被发现，大打一架；成龙去到一个",
+    "star": 2,
+    "likes": 1720,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|rating_mismatch"
+   },
+   {
+    "comment": "感觉一般。。",
+    "star": 1,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "感觉除了成龙以外，中国功夫电影界后继无人了。",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|user_burst|user_repeat"
+   },
+   {
+    "comment": "假，大，空！",
+    "star": 2,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "看成龙大哥的电影已经变成一种习惯了，从醉拳开始迷上成龙大哥中国功夫，一直到现在的十二生肖！",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|user_burst|user_repeat"
+   },
+   {
+    "comment": "期待了一个月的十二生肖终于看完了，滑轮衣太牛逼！",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|user_burst|user_repeat"
+   },
+   {
+    "comment": "比泰囧好看。",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "确实不错。",
+    "star": 5,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 5,
+  "movie_cn": "变形金刚4",
+  "movie_en": "Transformers Age of Extinction",
+  "n_reviews": 56211,
+  "n_suspect": 4739,
+  "suspect_rate": 0.0843,
+  "mean_spam_score": 0.0931,
+  "by_type": {
+   "dup_same_movie": 2732,
+   "dup_cross_movie": 2608,
+   "template": 140,
+   "ad": 391,
+   "user_burst": 0,
+   "user_repeat": 3306,
+   "movie_day_burst": 0,
+   "rating_mismatch": 921,
+   "like_bomb": 3,
+   "low_info": 5005
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "收破烂儿的和破烂儿的逆袭。",
+    "star": 4,
+    "likes": 510,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch|like_bomb"
+   },
+   {
+    "comment": "脑残粉不解释",
+    "star": 5,
+    "likes": 10,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "审美疲劳",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "三星半。。",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "@国大电影院，全班",
+    "star": 2,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "ad|rating_mismatch"
+   },
+   {
+    "comment": "又睡着了……",
+    "star": 2,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "爆米花不错",
+    "star": 1,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|user_repeat|rating_mismatch|low_info"
+   },
+   {
+    "comment": "狂拽酷炫叼炸天！",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 6,
+  "movie_cn": "后会无期",
+  "movie_en": "The Continent",
+  "n_reviews": 115380,
+  "n_suspect": 10383,
+  "suspect_rate": 0.09,
+  "mean_spam_score": 0.1067,
+  "by_type": {
+   "dup_same_movie": 7351,
+   "dup_cross_movie": 3940,
+   "template": 2134,
+   "ad": 593,
+   "user_burst": 128,
+   "user_repeat": 10579,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1279,
+   "like_bomb": 6,
+   "low_info": 8259
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "韩寒的电影完全不适合影院的大银幕，只适合优酷和土豆，真想看的话不妨等下载，只有在电脑前或手机上看才能看出点其中的感觉来。如果你在搭公车或坐地铁的途中，随手掏出手",
+    "star": 1,
+    "likes": 5244,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|ad"
+   },
+   {
+    "comment": "全程看狗",
+    "star": 2,
+    "likes": 525,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "【手动再见】",
+    "star": 1,
+    "likes": 155,
+    "spam_score": 1.0,
+    "reasons": "dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "“从小听了很多大道理，可依旧过不好我的生活”、“有时候你想证明给一万个人看，到后来，你发现只得到了一个明白的人，那就够了”",
+    "star": 4,
+    "likes": 97,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "导演处女作自动加1星。其他的，没啥可说了……可以用钱和资源做到它们所能做到的极限，但极限之外，就是真正的「电影」所需要面对和思考的问题了。但很可惜，最近两三年的",
+    "star": 3,
+    "likes": 76,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|ad|user_repeat"
+   },
+   {
+    "comment": "值得一看。",
+    "star": 5,
+    "likes": 11,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "高于预期",
+    "star": 4,
+    "likes": 7,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "段子集。。。",
+    "star": 2,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 7,
+  "movie_cn": "复仇者联盟",
+  "movie_en": "The Avengers",
+  "n_reviews": 74844,
+  "n_suspect": 7429,
+  "suspect_rate": 0.0993,
+  "mean_spam_score": 0.1137,
+  "by_type": {
+   "dup_same_movie": 4818,
+   "dup_cross_movie": 3658,
+   "template": 251,
+   "ad": 467,
+   "user_burst": 587,
+   "user_repeat": 6463,
+   "movie_day_burst": 0,
+   "rating_mismatch": 618,
+   "like_bomb": 1,
+   "low_info": 7924
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "纯粹狗血片，里面咋没有孙悟空、金刚葫芦娃和哪吒！",
+    "star": 2,
+    "likes": 771,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "值得一看。",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "搞笑片~~",
+    "star": 5,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "最爱钢铁侠 = =",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "爆米花片",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "我爱美队。",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "商业大片",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "爽爆了！",
+    "star": 5,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 8,
+  "movie_cn": "复仇者联盟2",
+  "movie_en": "Avengers Age of Ultron",
+  "n_reviews": 51516,
+  "n_suspect": 4706,
+  "suspect_rate": 0.0914,
+  "mean_spam_score": 0.0981,
+  "by_type": {
+   "dup_same_movie": 2799,
+   "dup_cross_movie": 2985,
+   "template": 76,
+   "ad": 373,
+   "user_burst": 0,
+   "user_repeat": 2584,
+   "movie_day_burst": 0,
+   "rating_mismatch": 791,
+   "like_bomb": 2,
+   "low_info": 5033
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "连奥创都知道整容要去韩国。",
+    "star": 3,
+    "likes": 2404,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|like_bomb"
+   },
+   {
+    "comment": "超级难看。。。",
+    "star": 2,
+    "likes": 6,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "脑残粉不解释",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "三星不能再多了",
+    "star": 3,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "好看！好看！好看！",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "狗尾续貂",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "昏昏欲睡",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "一般般啦",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 9,
+  "movie_cn": "夏洛特烦恼",
+  "movie_en": "Goodbye Mr. Loser",
+  "n_reviews": 104250,
+  "n_suspect": 9219,
+  "suspect_rate": 0.0884,
+  "mean_spam_score": 0.1066,
+  "by_type": {
+   "dup_same_movie": 6665,
+   "dup_cross_movie": 5218,
+   "template": 473,
+   "ad": 374,
+   "user_burst": 0,
+   "user_repeat": 9380,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1131,
+   "like_bomb": 4,
+   "low_info": 8554
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "你们开心就好。",
+    "star": 2,
+    "likes": 2238,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|rating_mismatch|like_bomb"
+   },
+   {
+    "comment": "三观不正",
+    "star": 1,
+    "likes": 86,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "挺好笑的",
+    "star": 4,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "笑成傻逼了",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "笑中带泪",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "我笑点....高",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "有笑点有泪点~",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "什么乱七八糟的！",
+    "star": 1,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 10,
+  "movie_cn": "大圣归来",
+  "movie_en": "CUG King of Heroes",
+  "n_reviews": 128113,
+  "n_suspect": 11393,
+  "suspect_rate": 0.0889,
+  "mean_spam_score": 0.1032,
+  "by_type": {
+   "dup_same_movie": 8948,
+   "dup_cross_movie": 5305,
+   "template": 606,
+   "ad": 475,
+   "user_burst": 0,
+   "user_repeat": 11196,
+   "movie_day_burst": 0,
+   "rating_mismatch": 862,
+   "like_bomb": 0,
+   "low_info": 9943
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "水军真多..",
+    "star": 1,
+    "likes": 254,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "习惯性好评",
+    "star": 1,
+    "likes": 97,
+    "spam_score": 1.0,
+    "reasons": "dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "什么玩意",
+    "star": 1,
+    "likes": 17,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "五星不解释！",
+    "star": 5,
+    "likes": 12,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "一定要看",
+    "star": 5,
+    "likes": 9,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "剧情弱了点",
+    "star": 3,
+    "likes": 9,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "没看够。",
+    "star": 5,
+    "likes": 7,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "值得一看！！！！",
+    "star": 5,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 11,
+  "movie_cn": "大鱼海棠",
+  "movie_en": "Big Fish and Begonia",
+  "n_reviews": 81161,
+  "n_suspect": 5348,
+  "suspect_rate": 0.0659,
+  "mean_spam_score": 0.0795,
+  "by_type": {
+   "dup_same_movie": 2899,
+   "dup_cross_movie": 2385,
+   "template": 679,
+   "ad": 357,
+   "user_burst": 25,
+   "user_repeat": 6001,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1390,
+   "like_bomb": 2,
+   "low_info": 4389
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "12年让大家等来一位绿茶婊",
+    "star": 2,
+    "likes": 12583,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|like_bomb"
+   },
+   {
+    "comment": "有点失望。",
+    "star": 2,
+    "likes": 30,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "赞赞赞！",
+    "star": 5,
+    "likes": 19,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "三观清奇",
+    "star": 1,
+    "likes": 19,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "5星不解释",
+    "star": 5,
+    "likes": 14,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "哭得稀里哗啦",
+    "star": 5,
+    "likes": 10,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "一星不能再多。。。",
+    "star": 1,
+    "likes": 10,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "还好吧！！！",
+    "star": 5,
+    "likes": 7,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 12,
+  "movie_cn": "寻龙诀",
+  "movie_en": "The Ghouls",
+  "n_reviews": 109026,
+  "n_suspect": 8381,
+  "suspect_rate": 0.0769,
+  "mean_spam_score": 0.0943,
+  "by_type": {
+   "dup_same_movie": 6088,
+   "dup_cross_movie": 4778,
+   "template": 224,
+   "ad": 382,
+   "user_burst": 21,
+   "user_repeat": 9361,
+   "movie_day_burst": 0,
+   "rating_mismatch": 860,
+   "like_bomb": 4,
+   "low_info": 7487
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "烂的不行",
+    "star": 1,
+    "likes": 398,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "没什么感觉——",
+    "star": 3,
+    "likes": 10,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "好看，我喜欢！！！",
+    "star": 4,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "特效还行",
+    "star": 4,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "一般！很一般！",
+    "star": 3,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "太他妈难看了",
+    "star": 1,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "特效还不错。",
+    "star": 3,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "大写的好看！",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 13,
+  "movie_cn": "小时代1",
+  "movie_en": "Tiny Times 1.0",
+  "n_reviews": 84887,
+  "n_suspect": 7533,
+  "suspect_rate": 0.0887,
+  "mean_spam_score": 0.1002,
+  "by_type": {
+   "dup_same_movie": 4215,
+   "dup_cross_movie": 3805,
+   "template": 209,
+   "ad": 517,
+   "user_burst": 59,
+   "user_repeat": 6570,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1969,
+   "like_bomb": 5,
+   "low_info": 6761
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "贱人就是矫情",
+    "star": 1,
+    "likes": 790,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|like_bomb"
+   },
+   {
+    "comment": "我觉得郭敬明请不了那么多水军来平衡豆瓣小清新们的一星狂欢~我知道就算你们看柯震东全裸的时候是多么心潮澎湃，看最后彩蛋的时候笑得多么无所顾忌，甚至看到雪姨出场还吹",
+    "star": 4,
+    "likes": 311,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch"
+   },
+   {
+    "comment": "贱人就是矫情！！！！！！！！！！！！",
+    "star": 1,
+    "likes": 204,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "大烂片！",
+    "star": 1,
+    "likes": 198,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "贱人就是矫情",
+    "star": 1,
+    "likes": 45,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "没看过。",
+    "star": 1,
+    "likes": 24,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "负分滚粗！！！",
+    "star": 1,
+    "likes": 13,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "能不给星么",
+    "star": 1,
+    "likes": 9,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 14,
+  "movie_cn": "小时代3",
+  "movie_en": "Tiny Times 3.0",
+  "n_reviews": 38385,
+  "n_suspect": 4066,
+  "suspect_rate": 0.1059,
+  "mean_spam_score": 0.1025,
+  "by_type": {
+   "dup_same_movie": 1955,
+   "dup_cross_movie": 2144,
+   "template": 43,
+   "ad": 225,
+   "user_burst": 0,
+   "user_repeat": 1558,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1346,
+   "like_bomb": 1,
+   "low_info": 3954
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "三部下来，郭导发挥还是很稳定的。",
+    "star": 1,
+    "likes": 2542,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "时代姐妹花，永远不分家！",
+    "star": 5,
+    "likes": 119,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "撕逼大戏",
+    "star": 5,
+    "likes": 110,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "呵呵呵呵呵呵",
+    "star": 1,
+    "likes": 106,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "金玉其外败絮其中",
+    "star": 1,
+    "likes": 11,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "一星，滚粗",
+    "star": 1,
+    "likes": 6,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "习惯性好评",
+    "star": 1,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "金玉其外败絮其中",
+    "star": 1,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 15,
+  "movie_cn": "左耳",
+  "movie_en": "The Left Ear",
+  "n_reviews": 38049,
+  "n_suspect": 2766,
+  "suspect_rate": 0.0727,
+  "mean_spam_score": 0.0767,
+  "by_type": {
+   "dup_same_movie": 1532,
+   "dup_cross_movie": 1348,
+   "template": 378,
+   "ad": 156,
+   "user_burst": 0,
+   "user_repeat": 1544,
+   "movie_day_burst": 0,
+   "rating_mismatch": 610,
+   "like_bomb": 1,
+   "low_info": 2713
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "垃圾片。",
+    "star": 1,
+    "likes": 38,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "意外的还不错",
+    "star": 5,
+    "likes": 26,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "sorry",
+    "star": 1,
+    "likes": 23,
+    "spam_score": 1.0,
+    "reasons": "dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "哈哈哈哈哈哈哈",
+    "star": 1,
+    "likes": 12,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "烂片！！！",
+    "star": 1,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "什么垃圾",
+    "star": 2,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "什么玩意！",
+    "star": 1,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "演员不错",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 16,
+  "movie_cn": "栀子花开",
+  "movie_en": "Forever Young",
+  "n_reviews": 28879,
+  "n_suspect": 2228,
+  "suspect_rate": 0.0771,
+  "mean_spam_score": 0.0787,
+  "by_type": {
+   "dup_same_movie": 1185,
+   "dup_cross_movie": 1337,
+   "template": 93,
+   "ad": 148,
+   "user_burst": 0,
+   "user_repeat": 1016,
+   "movie_day_burst": 0,
+   "rating_mismatch": 469,
+   "like_bomb": 10,
+   "low_info": 2182
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "烂片无疑",
+    "star": 1,
+    "likes": 132,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "蛮好笑的。",
+    "star": 4,
+    "likes": 26,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "为什么没有负分！",
+    "star": 1,
+    "likes": 22,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "浪费时间",
+    "star": 1,
+    "likes": 20,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "非常好看",
+    "star": 5,
+    "likes": 15,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "什么鬼？",
+    "star": 1,
+    "likes": 11,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "一星都不想给",
+    "star": 1,
+    "likes": 6,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "烂就一个字，我只说一次",
+    "star": 1,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 17,
+  "movie_cn": "泰囧",
+  "movie_en": "Lost In Thailand",
+  "n_reviews": 81715,
+  "n_suspect": 9127,
+  "suspect_rate": 0.1117,
+  "mean_spam_score": 0.1285,
+  "by_type": {
+   "dup_same_movie": 6961,
+   "dup_cross_movie": 5128,
+   "template": 162,
+   "ad": 536,
+   "user_burst": 70,
+   "user_repeat": 7659,
+   "movie_day_burst": 0,
+   "rating_mismatch": 649,
+   "like_bomb": 2,
+   "low_info": 9081
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "你到底什么星座啊！怎么人格这么分裂！哈哈哈，电影里面笑点很多，如果说从头笑到尾，并不过分！",
+    "star": 4,
+    "likes": 526,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "笑到眼泪都出来了！！！！！！",
+    "star": 5,
+    "likes": 12,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "哈哈哈哈哈哈哈哈哈哈",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "这...",
+    "star": 2,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "哈哈哈哈哈哈哈哈",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "不好笑……",
+    "star": 1,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "真心一般",
+    "star": 2,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "2B青年欢乐多",
+    "star": 2,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 18,
+  "movie_cn": "湄公河行动",
+  "movie_en": "Operation Mekong",
+  "n_reviews": 33583,
+  "n_suspect": 1895,
+  "suspect_rate": 0.0564,
+  "mean_spam_score": 0.0619,
+  "by_type": {
+   "dup_same_movie": 1056,
+   "dup_cross_movie": 1095,
+   "template": 52,
+   "ad": 165,
+   "user_burst": 0,
+   "user_repeat": 1152,
+   "movie_day_burst": 0,
+   "rating_mismatch": 256,
+   "like_bomb": 3,
+   "low_info": 2338
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "的确很不错",
+    "star": 5,
+    "likes": 15,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "节奏很好！",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "全程高能无尿点",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "出乎意料的好看",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "很好看！",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "年度最佳",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "太好看了",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "难得的好片",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 19,
+  "movie_cn": "爱乐之城",
+  "movie_en": "La La Land",
+  "n_reviews": 94220,
+  "n_suspect": 6028,
+  "suspect_rate": 0.064,
+  "mean_spam_score": 0.083,
+  "by_type": {
+   "dup_same_movie": 4115,
+   "dup_cross_movie": 2042,
+   "template": 1482,
+   "ad": 573,
+   "user_burst": 89,
+   "user_repeat": 8150,
+   "movie_day_burst": 0,
+   "rating_mismatch": 533,
+   "like_bomb": 0,
+   "low_info": 4502
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "So overrated...",
+    "star": 3,
+    "likes": 13,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "一言不合就尬舞",
+    "star": 4,
+    "likes": 5,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch"
+   },
+   {
+    "comment": "一言难尽。。",
+    "star": 5,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "？？？？？？？？？？？？？？？？？？？？",
+    "star": 1,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "我真的看哭了。",
+    "star": 4,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "大失所望。",
+    "star": 3,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "相濡以沫 不如相忘于江湖",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "无可挑剔",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 20,
+  "movie_cn": "疯狂动物城",
+  "movie_en": "Zootopia",
+  "n_reviews": 130453,
+  "n_suspect": 12878,
+  "suspect_rate": 0.0987,
+  "mean_spam_score": 0.119,
+  "by_type": {
+   "dup_same_movie": 10590,
+   "dup_cross_movie": 6107,
+   "template": 1427,
+   "ad": 719,
+   "user_burst": 36,
+   "user_repeat": 12849,
+   "movie_day_burst": 0,
+   "rating_mismatch": 401,
+   "like_bomb": 3,
+   "low_info": 12149
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "好喜欢！",
+    "star": 5,
+    "likes": 6,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "好看好看好看",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat"
+   },
+   {
+    "comment": "哈哈哈哈哈哈哈哈哈哈",
+    "star": 5,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "太搞笑了",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "哈～～～～～～哈～～～～～～～～～～～哈",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "萌出一脸血",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|user_repeat|low_info"
+   },
+   {
+    "comment": ".......",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "看了两遍~",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 21,
+  "movie_cn": "美人鱼",
+  "movie_en": "The Mermaid",
+  "n_reviews": 70831,
+  "n_suspect": 5164,
+  "suspect_rate": 0.0729,
+  "mean_spam_score": 0.0867,
+  "by_type": {
+   "dup_same_movie": 3254,
+   "dup_cross_movie": 3014,
+   "template": 88,
+   "ad": 279,
+   "user_burst": 0,
+   "user_repeat": 4976,
+   "movie_day_burst": 0,
+   "rating_mismatch": 810,
+   "like_bomb": 11,
+   "low_info": 5232
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "晚节不保",
+    "star": 1,
+    "likes": 1296,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "实力尴尬",
+    "star": 2,
+    "likes": 925,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "失望！！！",
+    "star": 1,
+    "likes": 196,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "好难看。",
+    "star": 2,
+    "likes": 120,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "平衡一下",
+    "star": 5,
+    "likes": 74,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "赤子之心。",
+    "star": 4,
+    "likes": 31,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "笑不出来",
+    "star": 2,
+    "likes": 26,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "爱是成全",
+    "star": 4,
+    "likes": 13,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 22,
+  "movie_cn": "美国队长3",
+  "movie_en": "Captain America Civil War",
+  "n_reviews": 61841,
+  "n_suspect": 4729,
+  "suspect_rate": 0.0765,
+  "mean_spam_score": 0.0836,
+  "by_type": {
+   "dup_same_movie": 2947,
+   "dup_cross_movie": 2208,
+   "template": 165,
+   "ad": 327,
+   "user_burst": 5,
+   "user_repeat": 3408,
+   "movie_day_burst": 0,
+   "rating_mismatch": 818,
+   "like_bomb": 3,
+   "low_info": 4934
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "如果说你真的要走 / 把你的盾牌还给我 / 在你身上也没有用 / 我可以还给我爸爸",
+    "star": 4,
+    "likes": 2633,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "打得挺热闹",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "标准的爆米花电影",
+    "star": 2,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|rating_mismatch"
+   },
+   {
+    "comment": "太虐了！！！！！！！！！！！！！！！！！",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "真的看不懂=_=",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "看完就忘",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "一般般啊",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "漫威大法好",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 23,
+  "movie_cn": "西游伏妖篇",
+  "movie_en": "Journey to the West The Demons Strike Back",
+  "n_reviews": 88739,
+  "n_suspect": 6076,
+  "suspect_rate": 0.0685,
+  "mean_spam_score": 0.0824,
+  "by_type": {
+   "dup_same_movie": 3317,
+   "dup_cross_movie": 3447,
+   "template": 131,
+   "ad": 286,
+   "user_burst": 89,
+   "user_repeat": 6714,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1586,
+   "like_bomb": 32,
+   "low_info": 5097
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "懂的人自然懂",
+    "star": 5,
+    "likes": 362,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|like_bomb"
+   },
+   {
+    "comment": "就是喜欢",
+    "star": 5,
+    "likes": 360,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "好看到爆",
+    "star": 5,
+    "likes": 323,
+    "spam_score": 1.0,
+    "reasons": "dup_cross_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "特效还可以、",
+    "star": 3,
+    "likes": 81,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "支持星爷。",
+    "star": 5,
+    "likes": 77,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "一星给星爷",
+    "star": 1,
+    "likes": 75,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "又臭又长",
+    "star": 1,
+    "likes": 64,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "特效可以。",
+    "star": 3,
+    "likes": 56,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 24,
+  "movie_cn": "西游降魔篇",
+  "movie_en": "Journey to the West Conquering the Demons",
+  "n_reviews": 76878,
+  "n_suspect": 7116,
+  "suspect_rate": 0.0926,
+  "mean_spam_score": 0.1067,
+  "by_type": {
+   "dup_same_movie": 4859,
+   "dup_cross_movie": 3494,
+   "template": 413,
+   "ad": 363,
+   "user_burst": 23,
+   "user_repeat": 6595,
+   "movie_day_burst": 0,
+   "rating_mismatch": 902,
+   "like_bomb": 1,
+   "low_info": 6770
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "周氏想象力重塑西游，造型绝对颠覆，蓬头垢脸唐三藏，变态侏儒孙悟空，油头粉脸猪八戒，堪称史上最脏乱丑取经四人组。《回魂夜》的巧克力打鬼，变成了儿歌除魔，依然有你熟",
+    "star": 4,
+    "likes": 484,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "蛮好看的",
+    "star": 5,
+    "likes": 147,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "真的不好看",
+    "star": 2,
+    "likes": 58,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "还挺好看的",
+    "star": 4,
+    "likes": 11,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "喜欢周星驰",
+    "star": 5,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "《一生所爱》",
+    "star": 5,
+    "likes": 4,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "周郎才尽",
+    "star": 2,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "舒淇 女神",
+    "star": 4,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 25,
+  "movie_cn": "釜山行",
+  "movie_en": "Train to Busan",
+  "n_reviews": 98706,
+  "n_suspect": 6596,
+  "suspect_rate": 0.0668,
+  "mean_spam_score": 0.0819,
+  "by_type": {
+   "dup_same_movie": 4654,
+   "dup_cross_movie": 2550,
+   "template": 222,
+   "ad": 469,
+   "user_burst": 26,
+   "user_repeat": 8297,
+   "movie_day_burst": 0,
+   "rating_mismatch": 633,
+   "like_bomb": 2,
+   "low_info": 5910
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "毫无新意",
+    "star": 1,
+    "likes": 9,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "节奏特别好",
+    "star": 5,
+    "likes": 9,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "好看个锤子",
+    "star": 2,
+    "likes": 6,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "(withu",
+    "star": 3,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "普普通通",
+    "star": 3,
+    "likes": 3,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "好看好看～～～～",
+    "star": 5,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "我觉得很一般啊.......",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "마동석 너무 귀여워ㅜㅜㅜㅜㅜㅜ",
+    "star": 3,
+    "likes": 2,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   }
+  ]
+ },
+ {
+  "movie_id": 26,
+  "movie_cn": "钢铁侠1",
+  "movie_en": "Iron Man",
+  "n_reviews": 22053,
+  "n_suspect": 2117,
+  "suspect_rate": 0.096,
+  "mean_spam_score": 0.101,
+  "by_type": {
+   "dup_same_movie": 1472,
+   "dup_cross_movie": 1183,
+   "template": 117,
+   "ad": 62,
+   "user_burst": 5,
+   "user_repeat": 759,
+   "movie_day_burst": 0,
+   "rating_mismatch": 194,
+   "like_bomb": 0,
+   "low_info": 2773
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "美国人，真幼稚，就喜欢看大力士",
+    "star": 1,
+    "likes": 107,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch"
+   },
+   {
+    "comment": "很好看!",
+    "star": 5,
+    "likes": 18,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "商业片的典范",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "我爱唐尼。",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "科技是第一生产力。",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "so so",
+    "star": 3,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|low_info"
+   },
+   {
+    "comment": "糖泥糖泥！",
+    "star": 4,
+    "likes": 1,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|user_repeat|low_info"
+   },
+   {
+    "comment": "小罗伯特唐尼。",
+    "star": 5,
+    "likes": 0,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   }
+  ]
+ },
+ {
+  "movie_id": 27,
+  "movie_cn": "长城",
+  "movie_en": "The Great Wall",
+  "n_reviews": 80093,
+  "n_suspect": 15805,
+  "suspect_rate": 0.1973,
+  "mean_spam_score": 0.1636,
+  "by_type": {
+   "dup_same_movie": 13060,
+   "dup_cross_movie": 2792,
+   "template": 895,
+   "ad": 440,
+   "user_burst": 200,
+   "user_repeat": 7645,
+   "movie_day_burst": 0,
+   "rating_mismatch": 1716,
+   "like_bomb": 7,
+   "low_info": 4751
+  },
+  "day_burst_p999": 17743.0,
+  "top_suspects": [
+   {
+    "comment": "张艺谋已死！",
+    "star": 1,
+    "likes": 9876,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|like_bomb|low_info"
+   },
+   {
+    "comment": "很好，张艺谋这次终于卸下他过往的艺术家包袱了，华丽转身，与以前的自己彻底说再见。",
+    "star": 1,
+    "likes": 6705,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|rating_mismatch"
+   },
+   {
+    "comment": "不管别人怎么说，也不管里面是不是真的槽点不少。但我看完就是爽，我热血了我燃了为什么不给高一些得分。谁说规规矩矩按模板拍一个爆米花电影就不能给高分？真不明白难道现",
+    "star": 4,
+    "likes": 814,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   },
+   {
+    "comment": "一星，不能再多。",
+    "star": 1,
+    "likes": 66,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "马特达蒙配景甜，很搭，与德性相匹配，简直是世界政治版图的隐喻",
+    "star": 1,
+    "likes": 60,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|rating_mismatch"
+   },
+   {
+    "comment": "态度很重要",
+    "star": 1,
+    "likes": 51,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie|rating_mismatch|low_info"
+   },
+   {
+    "comment": "可以打负分吗",
+    "star": 1,
+    "likes": 45,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|dup_cross_movie"
+   },
+   {
+    "comment": "无影禁军、饕餮围城等都是中国符号和元素，但在表现手法上又借鉴了更多好莱坞精英的创作经验和表现精髓，《长城》一定是中国电影史上创造性的一笔，希望票房给力！",
+    "star": 5,
+    "likes": 37,
+    "spam_score": 1.0,
+    "reasons": "dup_same_movie|template|user_repeat"
+   }
+  ]
+ }
+]
